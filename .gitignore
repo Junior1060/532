@@ -1,0 +1,15 @@
+/node_modules
+/.next
+/out
+/build
+.DS_Store
+*.pem 
+.env*.local
+.env
+.vercel
+*.tsbuildinfo
+next-env.d.ts.bak
+
+# Internal docs — keep local, don't publish
+SECURITY.md
+ROADMAP.md
