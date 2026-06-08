@@ -27,7 +27,6 @@ export function Footer() {
       links: [
         { href: "/list-business", label: t("footer.listYourBusiness") },
         { href: "/pricing", label: t("nav.pricing") },
-        { href: "/admin", label: t("footer.adminDashboard") },
         { href: "/login", label: t("action.signIn") },
       ],
     },
@@ -85,9 +84,9 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 text-sm text-white/40 md:flex-row">
           <p>{t("footer.copyright")}</p>
           <div className="flex gap-5">
-            <Link href="#" className="hover:text-white/70">{t("footer.privacy")}</Link>
-            <Link href="#" className="hover:text-white/70">{t("footer.terms")}</Link>
-            <Link href="#" className="hover:text-white/70">{t("footer.accessibility")}</Link>
+            <Link href="/privacy" className="hover:text-white/70">{t("footer.privacy")}</Link>
+            <Link href="/terms" className="hover:text-white/70">{t("footer.terms")}</Link>
+            <Link href="/accessibility" className="hover:text-white/70">{t("footer.accessibility")}</Link>
           </div>
         </div>
       </div>

@@ -4,6 +4,10 @@ import { CommunityFeed } from "@/components/community/CommunityFeed";
 import { buildMetadata } from "@/lib/seo";
 import { translate } from "@/lib/i18n";
 import { getServerLang } from "@/lib/locale";
+import { listPublishedPosts } from "@/lib/data/community";
+
+// Reflect newly approved community posts without a redeploy.
+export const revalidate = 120;
 
 export const metadata = buildMetadata({
   title: "Community",
@@ -13,6 +17,7 @@ export const metadata = buildMetadata({
 
 export default async function CommunityPage() {
   const lang = await getServerLang();
+  const posts = await listPublishedPosts();
   return (
     <>
       <PageHeader
@@ -21,7 +26,7 @@ export default async function CommunityPage() {
         description={translate(lang, "social.community.description")}
       />
       <Section className="py-10">
-        <CommunityFeed />
+        <CommunityFeed initialPosts={posts} />
       </Section>
     </>
   );

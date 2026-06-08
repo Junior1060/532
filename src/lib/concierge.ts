@@ -1,8 +1,7 @@
 import { CITIES, getCity } from "@/data/cities";
-import { BUSINESSES } from "@/data/businesses";
 import { CATEGORIES } from "@/data/categories";
 import { CATEGORY_LABEL } from "@/data/categories";
-import type { BusinessCategory } from "@/lib/types";
+import type { Business, BusinessCategory } from "@/lib/types";
 
 export interface ConciergeAnswer {
   text: string;
@@ -52,7 +51,7 @@ function detectCategory(q: string): BusinessCategory | undefined {
   return undefined;
 }
 
-export function askConcierge(query: string): ConciergeAnswer {
+export function askConcierge(query: string, businesses: Business[] = []): ConciergeAnswer {
   const q = query.toLowerCase().trim();
   if (!q) return FALLBACK;
 
@@ -61,7 +60,7 @@ export function askConcierge(query: string): ConciergeAnswer {
 
   // Category + city → directory results
   if (category && city) {
-    const matches = BUSINESSES.filter(
+    const matches = businesses.filter(
       (b) => b.citySlug === city.slug && b.category === category
     )
       .sort((a, b) => a.distanceFromStadiumKm - b.distanceFromStadiumKm)

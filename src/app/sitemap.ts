@@ -1,17 +1,18 @@
 import type { MetadataRoute } from "next";
 import { CITIES } from "@/data/cities";
 import { CATEGORIES } from "@/data/categories";
-import { BUSINESSES } from "@/data/businesses";
+import { listBusinesses } from "@/lib/data/businesses";
 import { FAN_HUBS } from "@/data/fanHubs";
 import { SITE } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE.url;
   const now = new Date();
+  const businesses = await listBusinesses({ limit: 200 });
 
   const staticRoutes = [
     "", "/cities", "/directory", "/match-day", "/near-me", "/fan-hubs",
-    "/community", "/pricing", "/list-business", "/search", "/login", "/signup", "/admin",
+    "/community", "/pricing", "/list-business", "/search", "/login", "/signup",
   ].map((path) => ({
     url: `${base}${path}`,
     lastModified: now,
@@ -33,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const businessRoutes = BUSINESSES.map((b) => ({
+  const businessRoutes = businesses.map((b) => ({
     url: `${base}/business/${b.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,

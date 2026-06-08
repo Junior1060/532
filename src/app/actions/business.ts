@@ -1,7 +1,8 @@
 "use server";
 
 import { headers } from "next/headers";
-import { getSupabaseServer, SUPABASE_CONFIGURED } from "@/lib/supabase";
+import { SUPABASE_CONFIGURED } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { slugify } from "@/lib/utils";
 import { rateLimit } from "@/lib/rateLimit";
 import type { BusinessCategory } from "@/lib/types";
@@ -80,8 +81,11 @@ export async function submitBusiness(
   };
 
   // Persist to Supabase when configured; otherwise accept and log (seed-data mode).
+  // Uses the service-role client: submissions are anonymous (no owner session),
+  // so they must bypass the owner-scoped RLS insert policy. New rows land as
+  // `verification: 'pending'` for an admin to approve in the dashboard.
   if (SUPABASE_CONFIGURED) {
-    const supabase = await getSupabaseServer();
+    const supabase = getSupabaseAdmin();
     if (supabase) {
       const { error } = await supabase.from("businesses").insert({
         name: record.name,

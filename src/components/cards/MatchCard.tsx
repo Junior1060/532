@@ -3,6 +3,7 @@
 import type { CityMatch } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { teamFlag } from "@/lib/teamFlags";
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -14,15 +15,15 @@ function fmtDate(iso: string) {
 
 export function MatchCard({
   match,
-  flag,
   highlight,
 }: {
   match: CityMatch;
-  flag?: string;
   highlight?: boolean;
 }) {
   const { t } = useLanguage();
   const isSpecial = /FINAL|OPENING|Semi|Third/i.test(match.stage);
+  const homeFlag = teamFlag(match.home);
+  const awayFlag = teamFlag(match.away);
   return (
     <div
       className={cn(
@@ -57,7 +58,9 @@ export function MatchCard({
           <span className="text-xs text-white/40">{match.kickoffLocal}</span>
         </div>
         <div className="mt-1.5 truncate text-sm font-medium text-white">
-          {flag} {match.home} <span className="text-white/40">{t("cities.detail.vs")}</span> {match.away}
+          {homeFlag && <span className="mr-1">{homeFlag}</span>}{match.home}{" "}
+          <span className="text-white/40">{t("cities.detail.vs")}</span>{" "}
+          {awayFlag && <span className="mr-1">{awayFlag}</span>}{match.away}
         </div>
       </div>
     </div>

@@ -1,52 +1,66 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+
+type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 /**
- * Interim access gate for /admin.
+ * Role-based access gate for /admin.
  *
- * Until full Supabase Auth + `profiles.is_admin` is wired, the admin area is
- * protected by a shared secret in ADMIN_ACCESS_TOKEN:
- *   - No token configured  → /admin is DISABLED (redirect home). Safe default.
- *   - Visit /admin?key=<token> once → sets an httpOnly cookie, then redirects clean.
- *   - Subsequent visits require that cookie.
+ * Refreshes the Supabase session, then allows the request only for a signed-in
+ * user whose `profiles.role` is 'admin' (see supabase/schema.sql + rls.sql).
+ *   - Not signed in        → /login?next=/admin
+ *   - Signed in, not admin → / (home)
+ *   - Supabase not configured → / (admin disabled, safe default)
  *
- * Replace this with a real per-user session + admin role check before opening
- * the dashboard to multiple operators (see SECURITY.md).
+ * To grant access, set a user's role in Supabase:
+ *   update public.profiles set role = 'admin' where id = '<auth user id>';
  */
-const ADMIN_COOKIE = "532_admin";
+export async function middleware(req: NextRequest) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export function middleware(req: NextRequest) {
-  const token = process.env.ADMIN_ACCESS_TOKEN;
-  const url = req.nextUrl;
-
-  // Admin is off unless an access token is explicitly configured.
-  if (!token) {
+  // Admin is disabled unless Supabase is configured.
+  if (!url || !anon) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // One-time unlock via ?key=… → set cookie, strip the key from the URL.
-  const key = url.searchParams.get("key");
-  if (key) {
-    if (key === token) {
-      const dest = url.clone();
-      dest.searchParams.delete("key");
-      const res = NextResponse.redirect(dest);
-      res.cookies.set(ADMIN_COOKIE, token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/admin",
-        maxAge: 60 * 60 * 8, // 8 hours
-      });
-      return res;
-    }
-    return NextResponse.redirect(new URL("/login", req.url));
+  let res = NextResponse.next({ request: req });
+
+  const supabase = createServerClient(url, anon, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet: CookieToSet[]) {
+        cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+        res = NextResponse.next({ request: req });
+        cookiesToSet.forEach(({ name, value, options }) =>
+          res.cookies.set(name, value, options)
+        );
+      },
+    },
+  });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.redirect(new URL("/login?next=/admin", req.url));
   }
 
-  if (req.cookies.get(ADMIN_COOKIE)?.value === token) {
-    return NextResponse.next();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return NextResponse.redirect(new URL("/", req.url));
   }
-  return NextResponse.redirect(new URL("/login", req.url));
+
+  return res;
 }
 
 export const config = {

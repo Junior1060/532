@@ -10,7 +10,7 @@ import { CityCard } from "@/components/cards/CityCard";
 import { BusinessCard } from "@/components/cards/BusinessCard";
 import { CITIES, COUNTRIES } from "@/data/cities";
 import { CATEGORIES } from "@/data/categories";
-import { getFeaturedBusinesses, DIRECTORY_STATS } from "@/data/businesses";
+import { getFeaturedBusinesses, getDirectoryStats } from "@/lib/data/businesses";
 import { Icon } from "@/components/ui/Icon";
 import { MatchDayTeaser } from "@/components/home/MatchDayTeaser";
 import { ConciergeTeaser } from "@/components/home/ConciergeTeaser";
@@ -21,7 +21,8 @@ import { translateCities, translateCategories, translateBusinesses } from "@/lib
 export default async function HomePage() {
   const lang = await getServerLang();
   const featuredCities = await translateCities(CITIES.slice(0, 6), lang);
-  const featured = await translateBusinesses(getFeaturedBusinesses(6), lang);
+  const [rawFeatured, DIRECTORY_STATS] = await Promise.all([getFeaturedBusinesses(6), getDirectoryStats()]);
+  const featured = await translateBusinesses(rawFeatured, lang);
   const categories = await translateCategories(CATEGORIES.slice(0, 12), lang);
 
   return (

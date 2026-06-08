@@ -3,7 +3,7 @@ import Link from "next/link";
 import {
   Star, MapPin, Phone, Mail, Globe, Clock, MessageCircle, ArrowRight, BadgeCheck, Navigation,
 } from "lucide-react";
-import { BUSINESSES, getBusiness, getBusinessesByCity } from "@/data/businesses";
+import { getBusinessBySlug, getBusinessesByCity } from "@/lib/data/businesses";
 import { getCity } from "@/data/cities";
 import { CATEGORY_LABEL, getCategory } from "@/data/categories";
 import { Section } from "@/components/ui/Section";
@@ -17,13 +17,13 @@ import { translate } from "@/lib/i18n";
 import { getServerLang } from "@/lib/locale";
 import { translateBusiness, translateBusinesses, translateCategory } from "@/lib/translateData";
 
-export function generateStaticParams() {
-  return BUSINESSES.map((b) => ({ slug: b.slug }));
-}
+// Listings live in the database and change as admins approve them, so render
+// business pages on demand rather than prebuilding a fixed set.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const b = getBusiness(slug);
+  const b = await getBusinessBySlug(slug);
   if (!b) return buildMetadata({ title: translate(await getServerLang(), "directory.business.notFound") });
   const city = getCity(b.citySlug);
   return buildMetadata({
@@ -35,13 +35,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BusinessPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const rawBusiness = getBusiness(slug);
+  const rawBusiness = await getBusinessBySlug(slug);
   if (!rawBusiness) notFound();
   const lang = await getServerLang();
   const b = await translateBusiness(rawBusiness, lang);
   const city = getCity(rawBusiness.citySlug);
   const related = await translateBusinesses(
-    getBusinessesByCity(rawBusiness.citySlug)
+    (await getBusinessesByCity(rawBusiness.citySlug))
       .filter((x) => x.category === rawBusiness.category && x.id !== rawBusiness.id)
       .slice(0, 3),
     lang

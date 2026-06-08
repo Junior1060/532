@@ -140,6 +140,8 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.signup.subtitle": "Join 532 for your World Cup trip",
     "commerce.auth.demoComplete":
       "✅ Demo auth flow complete. Connect Supabase Auth to enable real Google, Apple, and email sign-in.",
+    "commerce.auth.checkEmail":
+      "✅ Account created. Check your email for a confirmation link to finish signing in.",
     "commerce.auth.continueWith": "Continue with {provider}",
     "commerce.auth.dividerLogin": "or sign in with email",
     "commerce.auth.dividerSignup": "or sign up with email",
@@ -156,6 +158,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
 
     // Admin page
     "commerce.admin.eyebrow": "Internal",
+    "commerce.admin.signOut": "Sign out",
     "commerce.admin.title": "Admin command center.",
     "commerce.admin.description":
       "Moderate business submissions, manage city data, broadcast alerts, and track platform analytics.",
@@ -329,6 +332,8 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.signup.subtitle": "انضم إلى 532 لرحلتك في كأس العالم",
     "commerce.auth.demoComplete":
       "✅ اكتمل تدفق المصادقة التجريبي. اربط Supabase Auth لتفعيل تسجيل الدخول الحقيقي عبر Google وApple والبريد الإلكتروني.",
+    "commerce.auth.checkEmail":
+      "✅ تم إنشاء الحساب. تحقق من بريدك الإلكتروني للحصول على رابط التأكيد لإكمال تسجيل الدخول.",
     "commerce.auth.continueWith": "المتابعة باستخدام {provider}",
     "commerce.auth.dividerLogin": "أو سجّل الدخول بالبريد الإلكتروني",
     "commerce.auth.dividerSignup": "أو سجّل بالبريد الإلكتروني",
@@ -344,6 +349,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.guest": "المتابعة كضيف →",
 
     "commerce.admin.eyebrow": "داخلي",
+    "commerce.admin.signOut": "تسجيل الخروج",
     "commerce.admin.title": "مركز قيادة الإدارة.",
     "commerce.admin.description":
       "راجع طلبات الأعمال، وأدِر بيانات المدن، وأرسل التنبيهات، وتابع تحليلات المنصة.",
@@ -516,6 +522,8 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.signup.subtitle": "Rejoignez 532 pour votre voyage à la Coupe du Monde",
     "commerce.auth.demoComplete":
       "✅ Flux d'authentification démo terminé. Connectez Supabase Auth pour activer la vraie connexion Google, Apple et e-mail.",
+    "commerce.auth.checkEmail":
+      "✅ Compte créé. Consultez votre e-mail pour le lien de confirmation afin de terminer la connexion.",
     "commerce.auth.continueWith": "Continuer avec {provider}",
     "commerce.auth.dividerLogin": "ou connectez-vous avec un e-mail",
     "commerce.auth.dividerSignup": "ou inscrivez-vous avec un e-mail",
@@ -531,6 +539,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.guest": "Continuer en tant qu'invité →",
 
     "commerce.admin.eyebrow": "Interne",
+    "commerce.admin.signOut": "Se déconnecter",
     "commerce.admin.title": "Centre de commande admin.",
     "commerce.admin.description":
       "Modérez les soumissions d'entreprises, gérez les données des villes, diffusez des alertes et suivez les analyses de la plateforme.",
@@ -703,6 +712,8 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.signup.subtitle": "Únete a 532 para tu viaje al Mundial",
     "commerce.auth.demoComplete":
       "✅ Flujo de autenticación de demostración completado. Conecta Supabase Auth para habilitar el inicio de sesión real con Google, Apple y correo electrónico.",
+    "commerce.auth.checkEmail":
+      "✅ Cuenta creada. Revisa tu correo electrónico para el enlace de confirmación y completar el inicio de sesión.",
     "commerce.auth.continueWith": "Continuar con {provider}",
     "commerce.auth.dividerLogin": "o inicia sesión con tu correo",
     "commerce.auth.dividerSignup": "o regístrate con tu correo",
@@ -718,6 +729,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.guest": "Continuar como invitado →",
 
     "commerce.admin.eyebrow": "Interno",
+    "commerce.admin.signOut": "Cerrar sesión",
     "commerce.admin.title": "Centro de comando de administración.",
     "commerce.admin.description":
       "Modera los envíos de negocios, gestiona los datos de las ciudades, difunde alertas y haz seguimiento de las analíticas de la plataforma.",
@@ -890,6 +902,8 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.signup.subtitle": "Treten Sie 532 für Ihre WM-Reise bei",
     "commerce.auth.demoComplete":
       "✅ Demo-Authentifizierungsablauf abgeschlossen. Verbinden Sie Supabase Auth, um echte Anmeldung über Google, Apple und E-Mail zu aktivieren.",
+    "commerce.auth.checkEmail":
+      "✅ Konto erstellt. Prüfen Sie Ihre E-Mail auf den Bestätigungslink, um die Anmeldung abzuschließen.",
     "commerce.auth.continueWith": "Mit {provider} fortfahren",
     "commerce.auth.dividerLogin": "oder mit E-Mail anmelden",
     "commerce.auth.dividerSignup": "oder mit E-Mail registrieren",
@@ -905,6 +919,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     "commerce.auth.guest": "Als Gast fortfahren →",
 
     "commerce.admin.eyebrow": "Intern",
+    "commerce.admin.signOut": "Abmelden",
     "commerce.admin.title": "Admin-Kommandozentrale.",
     "commerce.admin.description":
       "Moderieren Sie Unternehmenseinreichungen, verwalten Sie Stadtdaten, senden Sie Warnungen und verfolgen Sie Plattform-Analysen.",

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Users, Calendar, MapPin, MessageSquare, ArrowRight, Sparkles } from "lucide-react";
 import { FAN_HUBS, getFanHub } from "@/data/fanHubs";
 import { getCity } from "@/data/cities";
-import { getBusinessesByCity } from "@/data/businesses";
+import { getBusinessesByCity } from "@/lib/data/businesses";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { AmbientBackground } from "@/components/visuals/AmbientBackground";
@@ -44,7 +44,7 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
   const hub = await translateFanHub(rawHub, lang);
   const city = getCity(rawHub.citySlug)!;
   const bars = await translateBusinesses(
-    getBusinessesByCity(city.slug).filter((b) => b.category === "bars" || b.category === "restaurants").slice(0, 3),
+    (await getBusinessesByCity(city.slug)).filter((b) => b.category === "bars" || b.category === "restaurants").slice(0, 3),
     lang,
   );
 

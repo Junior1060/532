@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, ArrowRight, MapPin } from "lucide-react";
 import { CITIES } from "@/data/cities";
-import { searchBusinesses } from "@/data/businesses";
-import { askConcierge } from "@/lib/concierge";
+import type { ConciergeAnswer } from "@/lib/concierge";
+import type { Business } from "@/lib/types";
 import { SmartSearch } from "@/components/SmartSearch";
 import { BusinessCard } from "@/components/cards/BusinessCard";
 import { CityCard } from "@/components/cards/CityCard";
@@ -29,8 +29,43 @@ export function SearchResults() {
         : [],
     [q]
   );
-  const bizResults = useMemo(() => (q ? searchBusinesses(q) : []), [q]);
-  const answer = useMemo(() => (q ? askConcierge(q) : null), [q]);
+
+  const [bizResults, setBizResults] = useState<Business[]>([]);
+  const [answer, setAnswer] = useState<ConciergeAnswer | null>(null);
+
+  useEffect(() => {
+    if (!q) {
+      setBizResults([]);
+      setAnswer(null);
+      return;
+    }
+    let active = true;
+    (async () => {
+      try {
+        const [bizRes, ansRes] = await Promise.all([
+          fetch(`/api/businesses?q=${encodeURIComponent(q)}&limit=24`),
+          fetch("/api/concierge", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: q }),
+          }),
+        ]);
+        const biz = await bizRes.json();
+        const ans = await ansRes.json();
+        if (!active) return;
+        setBizResults(Array.isArray(biz?.results) ? biz.results : []);
+        setAnswer(ans && typeof ans.text === "string" ? ans : null);
+      } catch {
+        if (active) {
+          setBizResults([]);
+          setAnswer(null);
+        }
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [q]);
 
   return (
     <div>

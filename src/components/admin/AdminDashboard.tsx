@@ -1,17 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard, Store, Building2, Flag, MessageSquare, BarChart3,
-  Check, X, BadgeCheck, TrendingUp, Users, Eye, DollarSign,
+  LayoutDashboard, Store, Building2, Flag, MessageSquare,
+  Check, X, BadgeCheck, Loader2,
 } from "lucide-react";
-import { BUSINESSES } from "@/data/businesses";
 import { CITIES } from "@/data/cities";
-import { COMMUNITY_POSTS } from "@/data/live";
 import { CATEGORY_LABEL } from "@/data/categories";
-import { cn, formatNumber } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import {
+  setBusinessVerification,
+  moderatePost,
+  postAlert,
+  deactivateAlert,
+} from "@/app/actions/admin";
+import type { BusinessCategory } from "@/lib/types";
+
+/** A pending listing loaded from the database for the review queue. */
+export interface PendingBusiness {
+  id: string;
+  name: string;
+  category: string;
+  address: string | null;
+  city_slug: string | null;
+}
+
+export interface PendingPost {
+  id: string;
+  title: string;
+  body: string;
+  type: string;
+  city_slug: string | null;
+}
+
+export interface AdminAlert {
+  id: string;
+  message: string;
+  city_slug: string | null;
+  level: string;
+}
+
+export interface AdminStats {
+  pendingBusinesses: number;
+  verifiedBusinesses: number;
+  pendingPosts: number;
+  activeAlerts: number;
+}
 
 const TABS = [
   { id: "overview", labelKey: "commerce.admin.tab.overview", icon: LayoutDashboard },
@@ -19,13 +55,33 @@ const TABS = [
   { id: "cities", labelKey: "commerce.admin.tab.cities", icon: Building2 },
   { id: "alerts", labelKey: "commerce.admin.tab.alerts", icon: Flag },
   { id: "community", labelKey: "commerce.admin.tab.community", icon: MessageSquare },
-  { id: "analytics", labelKey: "commerce.admin.tab.analytics", icon: BarChart3 },
 ];
 
-export function AdminDashboard() {
+const cityName = (slug: string | null) =>
+  CITIES.find((c) => c.slug === slug)?.name ?? (slug ?? "All cities");
+
+export function AdminDashboard({
+  pendingBusinesses,
+  pendingPosts,
+  alerts,
+  stats,
+}: {
+  pendingBusinesses: PendingBusiness[];
+  pendingPosts: PendingPost[];
+  alerts: AdminAlert[];
+  stats: AdminStats;
+}) {
   const { t } = useLanguage();
   const [tab, setTab] = useState("overview");
-  const pending = BUSINESSES.filter((b) => b.verification === "pending");
+  const [pending, setPending] = useState(pendingBusinesses);
+  const [posts, setPosts] = useState(pendingPosts);
+
+  // Live counts reflect actions taken this session.
+  const liveStats: AdminStats = {
+    ...stats,
+    pendingBusinesses: pending.length,
+    pendingPosts: posts.length,
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
@@ -43,87 +99,100 @@ export function AdminDashboard() {
       </aside>
 
       <div>
-        {tab === "overview" && <Overview pending={pending.length} />}
-        {tab === "submissions" && <Submissions pending={pending} />}
+        {tab === "overview" && <Overview stats={liveStats} onJump={setTab} />}
+        {tab === "submissions" && <Submissions pending={pending} setPending={setPending} />}
         {tab === "cities" && <CitiesAdmin />}
-        {tab === "alerts" && <AlertsAdmin />}
-        {tab === "community" && <CommunityModeration />}
-        {tab === "analytics" && <Analytics />}
+        {tab === "alerts" && <AlertsAdmin initialAlerts={alerts} />}
+        {tab === "community" && <CommunityModeration posts={posts} setPosts={setPosts} />}
       </div>
     </div>
   );
 }
 
-function StatCard({ icon: Icon, label, value, trend }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; trend?: string }) {
-  return (
-    <div className="glass rounded-3xl p-5">
-      <div className="flex items-center justify-between">
-        <Icon className="h-5 w-5 text-neon" />
-        {trend && <span className="text-xs text-neon">{trend}</span>}
-      </div>
-      <div className="mt-3 text-2xl font-bold text-white">{value}</div>
-      <div className="text-xs text-white/50">{label}</div>
-    </div>
-  );
-}
-
-function Overview({ pending }: { pending: number }) {
+function Overview({ stats, onJump }: { stats: AdminStats; onJump: (tab: string) => void }) {
   const { t } = useLanguage();
+  const cards = [
+    { value: stats.pendingBusinesses, label: t("commerce.admin.pendingSubmissions"), tab: "submissions", tone: "amber" as const },
+    { value: stats.pendingPosts, label: t("commerce.admin.postsToModerate"), tab: "community", tone: "blue" as const },
+    { value: stats.activeAlerts, label: t("commerce.admin.activeCityAlerts"), tab: "alerts", tone: "neon" as const },
+    { value: stats.verifiedBusinesses, label: t("commerce.admin.stat.listedBusinesses"), tab: "submissions", tone: "neon" as const },
+  ];
+  const toneClass = {
+    amber: "border-accent-amber/30 bg-accent-amber/[0.06] text-accent-amber",
+    blue: "border-accent-blue/30 bg-accent-blue/[0.06] text-accent-blue",
+    neon: "border-neon/30 bg-neon/[0.06] text-neon",
+  };
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Eye} label={t("commerce.admin.stat.monthlyVisitors")} value="284K" trend="+12%" />
-        <StatCard icon={Users} label={t("commerce.admin.stat.activeFans")} value="12,421" trend="+8%" />
-        <StatCard icon={Store} label={t("commerce.admin.stat.listedBusinesses")} value={formatNumber(BUSINESSES.length)} trend="+34" />
-        <StatCard icon={DollarSign} label={t("commerce.admin.stat.mrr")} value="$18.4K" trend="+21%" />
-      </div>
       <div className="glass rounded-3xl p-6">
         <h3 className="font-semibold text-white">{t("commerce.admin.needsAttention")}</h3>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-accent-amber/30 bg-accent-amber/[0.06] p-4">
-            <div className="text-2xl font-bold text-accent-amber">{pending}</div>
-            <div className="text-sm text-white/60">{t("commerce.admin.pendingSubmissions")}</div>
-          </div>
-          <div className="rounded-2xl border border-accent-blue/30 bg-accent-blue/[0.06] p-4">
-            <div className="text-2xl font-bold text-accent-blue">3</div>
-            <div className="text-sm text-white/60">{t("commerce.admin.postsToModerate")}</div>
-          </div>
-          <div className="rounded-2xl border border-neon/30 bg-neon/[0.06] p-4">
-            <div className="text-2xl font-bold text-neon">2</div>
-            <div className="text-sm text-white/60">{t("commerce.admin.activeCityAlerts")}</div>
-          </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((c) => (
+            <button key={c.label} onClick={() => onJump(c.tab)}
+              className={cn("rounded-2xl border p-4 text-left transition-transform hover:scale-[1.02]", toneClass[c.tone])}>
+              <div className="text-2xl font-bold">{c.value}</div>
+              <div className="text-sm text-white/60">{c.label}</div>
+            </button>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function Submissions({ pending }: { pending: typeof BUSINESSES }) {
+function Submissions({
+  pending,
+  setPending,
+}: {
+  pending: PendingBusiness[];
+  setPending: React.Dispatch<React.SetStateAction<PendingBusiness[]>>;
+}) {
   const { t } = useLanguage();
-  const [items, setItems] = useState(pending.slice(0, 8));
-  const act = (id: string) => setItems((x) => x.filter((b) => b.id !== id));
+  const [isPending, startTransition] = useTransition();
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const categoryLabel = (c: string) => CATEGORY_LABEL[c as BusinessCategory] ?? c;
+
+  function act(id: string, status: "verified" | "rejected") {
+    setError(null);
+    setBusyId(id);
+    startTransition(async () => {
+      const res = await setBusinessVerification(id, status);
+      if (res.ok) setPending((x) => x.filter((b) => b.id !== id));
+      else setError(res.message);
+      setBusyId(null);
+    });
+  }
+
   return (
     <div className="glass rounded-3xl p-6">
       <h3 className="font-semibold text-white">{t("commerce.admin.reviewQueue")}</h3>
+      {error && (
+        <div className="mt-3 rounded-2xl border border-accent-red/30 bg-accent-red/[0.06] p-3 text-sm text-accent-red">{error}</div>
+      )}
       <div className="mt-4 space-y-2.5">
-        {items.length === 0 && <p className="py-8 text-center text-white/45">{t("commerce.admin.queueClear")}</p>}
-        {items.map((b) => (
-          <motion.div key={b.id} layout exit={{ opacity: 0, x: -20 }}
-            className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/[0.07] p-4">
-            <div className="min-w-0 flex-1">
-              <div className="font-medium text-white">{b.name}</div>
-              <div className="text-xs text-white/45">{CATEGORY_LABEL[b.category]} · {b.address}</div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => act(b.id)} className="flex items-center gap-1.5 rounded-full bg-neon/15 px-3 py-1.5 text-sm text-neon hover:bg-neon/25">
-                <Check className="h-4 w-4" /> {t("commerce.admin.approve")}
-              </button>
-              <button onClick={() => act(b.id)} className="flex items-center gap-1.5 rounded-full bg-accent-red/15 px-3 py-1.5 text-sm text-accent-red hover:bg-accent-red/25">
-                <X className="h-4 w-4" /> {t("commerce.admin.reject")}
-              </button>
-            </div>
-          </motion.div>
-        ))}
+        {pending.length === 0 && <p className="py-8 text-center text-white/45">{t("commerce.admin.queueClear")}</p>}
+        {pending.map((b) => {
+          const busy = isPending && busyId === b.id;
+          return (
+            <motion.div key={b.id} layout exit={{ opacity: 0, x: -20 }}
+              className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/[0.07] p-4">
+              <div className="min-w-0 flex-1">
+                <div className="font-medium text-white">{b.name}</div>
+                <div className="text-xs text-white/45">{categoryLabel(b.category)}{b.address ? ` · ${b.address}` : ""}</div>
+              </div>
+              <div className="flex gap-2">
+                <button disabled={busy} onClick={() => act(b.id, "verified")} className="flex items-center gap-1.5 rounded-full bg-neon/15 px-3 py-1.5 text-sm text-neon hover:bg-neon/25 disabled:opacity-50">
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />} {t("commerce.admin.approve")}
+                </button>
+                <button disabled={busy} onClick={() => act(b.id, "rejected")} className="flex items-center gap-1.5 rounded-full bg-accent-red/15 px-3 py-1.5 text-sm text-accent-red hover:bg-accent-red/25 disabled:opacity-50">
+                  <X className="h-4 w-4" /> {t("commerce.admin.reject")}
+                </button>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
@@ -152,35 +221,60 @@ function CitiesAdmin() {
   );
 }
 
-function AlertsAdmin() {
-  const [alerts, setAlerts] = useState([
-    { id: 1, city: "Toronto", text: "Heavy congestion near Gate 3 after the match", level: "warning" },
-    { id: 2, city: "Mexico City", text: "Tren Ligero running extra service for the opener", level: "info" },
-  ]);
-  const [text, setText] = useState("");
+function AlertsAdmin({ initialAlerts }: { initialAlerts: AdminAlert[] }) {
   const { t } = useLanguage();
+  const [alerts, setAlerts] = useState(initialAlerts);
+  const [text, setText] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function publish() {
+    const message = text.trim();
+    if (!message) return;
+    setError(null);
+    startTransition(async () => {
+      const res = await postAlert(message, null, "warning");
+      if (res.ok) {
+        // Optimistic: prepend. Server revalidates on next load with the real id.
+        setAlerts((a) => [{ id: `tmp-${a.length}-${message.length}`, message, city_slug: null, level: "warning" }, ...a]);
+        setText("");
+      } else setError(res.message);
+    });
+  }
+
+  function remove(id: string) {
+    setError(null);
+    startTransition(async () => {
+      const res = await deactivateAlert(id);
+      if (res.ok) setAlerts((x) => x.filter((y) => y.id !== id));
+      else setError(res.message);
+    });
+  }
+
   return (
     <div className="space-y-4">
       <div className="glass rounded-3xl p-6">
         <h3 className="font-semibold text-white">{t("commerce.admin.postAlert")}</h3>
+        {error && <div className="mt-3 rounded-2xl border border-accent-red/30 bg-accent-red/[0.06] p-3 text-sm text-accent-red">{error}</div>}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
           <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t("commerce.admin.alertPlaceholder")}
             className="flex-1 rounded-2xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-neon/40" />
-          <button onClick={() => { if (text.trim()) { setAlerts((a) => [{ id: Date.now() % 100000, city: t("commerce.admin.allCities"), text, level: "warning" }, ...a]); setText(""); } }}
-            className="rounded-full bg-neon px-6 py-3 text-sm font-semibold text-ink-950 hover:brightness-110">{t("commerce.admin.publishAlert")}</button>
+          <button disabled={isPending || !text.trim()} onClick={publish}
+            className="rounded-full bg-neon px-6 py-3 text-sm font-semibold text-ink-950 hover:brightness-110 disabled:opacity-50">{t("commerce.admin.publishAlert")}</button>
         </div>
       </div>
       <div className="glass rounded-3xl p-6">
         <h3 className="font-semibold text-white">{t("commerce.admin.activeAlerts")}</h3>
         <div className="mt-4 space-y-2.5">
+          {alerts.length === 0 && <p className="py-6 text-center text-white/45">{t("commerce.admin.queueClear")}</p>}
           {alerts.map((a) => (
             <div key={a.id} className={cn("flex items-center justify-between rounded-2xl border p-4",
-              a.level === "warning" ? "border-accent-amber/30 bg-accent-amber/[0.06]" : "border-accent-blue/30 bg-accent-blue/[0.06]")}>
+              a.level === "warning" ? "border-accent-amber/30 bg-accent-amber/[0.06]" : a.level === "critical" ? "border-accent-red/30 bg-accent-red/[0.06]" : "border-accent-blue/30 bg-accent-blue/[0.06]")}>
               <div>
-                <div className="text-xs text-white/45">{a.city}</div>
-                <div className="text-sm text-white/80">{a.text}</div>
+                <div className="text-xs text-white/45">{cityName(a.city_slug)}</div>
+                <div className="text-sm text-white/80">{a.message}</div>
               </div>
-              <button onClick={() => setAlerts((x) => x.filter((y) => y.id !== a.id))} className="text-white/40 hover:text-accent-red"><X className="h-4 w-4" /></button>
+              <button disabled={isPending} onClick={() => remove(a.id)} className="text-white/40 hover:text-accent-red disabled:opacity-50"><X className="h-4 w-4" /></button>
             </div>
           ))}
         </div>
@@ -189,52 +283,55 @@ function AlertsAdmin() {
   );
 }
 
-function CommunityModeration() {
+function CommunityModeration({
+  posts,
+  setPosts,
+}: {
+  posts: PendingPost[];
+  setPosts: React.Dispatch<React.SetStateAction<PendingPost[]>>;
+}) {
   const { t } = useLanguage();
-  const [posts, setPosts] = useState(COMMUNITY_POSTS.slice(0, 4));
-  const act = (id: string) => setPosts((x) => x.filter((p) => p.id !== id));
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function act(id: string, status: "published" | "removed") {
+    setError(null);
+    setBusyId(id);
+    startTransition(async () => {
+      const res = await moderatePost(id, status);
+      if (res.ok) setPosts((x) => x.filter((p) => p.id !== id));
+      else setError(res.message);
+      setBusyId(null);
+    });
+  }
+
   return (
     <div className="glass rounded-3xl p-6">
       <h3 className="font-semibold text-white">{t("commerce.admin.communityModeration")}</h3>
+      {error && <div className="mt-3 rounded-2xl border border-accent-red/30 bg-accent-red/[0.06] p-3 text-sm text-accent-red">{error}</div>}
       <div className="mt-4 space-y-2.5">
         {posts.length === 0 && <p className="py-8 text-center text-white/45">{t("commerce.admin.noPosts")}</p>}
-        {posts.map((p) => (
-          <motion.div key={p.id} layout exit={{ opacity: 0 }} className="rounded-2xl border border-white/[0.07] p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-white">{p.title}</span>
-              <span className="text-xs text-white/40">{p.flag} {p.city} · {p.type}</span>
-            </div>
-            <p className="mt-1 text-sm text-white/55">{p.body}</p>
-            <div className="mt-3 flex gap-2">
-              <button onClick={() => act(p.id)} className="flex items-center gap-1.5 rounded-full bg-neon/15 px-3 py-1.5 text-sm text-neon hover:bg-neon/25"><Check className="h-4 w-4" /> {t("commerce.admin.publish")}</button>
-              <button onClick={() => act(p.id)} className="flex items-center gap-1.5 rounded-full bg-accent-red/15 px-3 py-1.5 text-sm text-accent-red hover:bg-accent-red/25"><X className="h-4 w-4" /> {t("commerce.admin.remove")}</button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Analytics() {
-  const { t } = useLanguage();
-  const bars = [42, 58, 70, 55, 80, 95, 72, 88, 64, 90, 78, 99];
-  return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard icon={TrendingUp} label={t("commerce.admin.stat.pageViews")} value="1.2M" trend="+18%" />
-        <StatCard icon={Store} label={t("commerce.admin.stat.directoryClicks")} value="86K" trend="+24%" />
-        <StatCard icon={Users} label={t("commerce.admin.stat.conciergeQueries")} value="41K" trend="+39%" />
-      </div>
-      <div className="glass rounded-3xl p-6">
-        <h3 className="font-semibold text-white">{t("commerce.admin.trafficTitle")}</h3>
-        <div className="mt-6 flex h-44 items-end gap-2">
-          {bars.map((h, i) => (
-            <motion.div key={i} initial={{ height: 0 }} whileInView={{ height: `${h}%` }} viewport={{ once: true }}
-              transition={{ delay: i * 0.04, duration: 0.5 }}
-              className="flex-1 rounded-t-lg bg-gradient-to-t from-neon/30 to-neon" />
-          ))}
-        </div>
+        {posts.map((p) => {
+          const busy = isPending && busyId === p.id;
+          return (
+            <motion.div key={p.id} layout exit={{ opacity: 0 }} className="rounded-2xl border border-white/[0.07] p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-white">{p.title}</span>
+                <span className="text-xs text-white/40">{cityName(p.city_slug)} · {p.type}</span>
+              </div>
+              <p className="mt-1 text-sm text-white/55">{p.body}</p>
+              <div className="mt-3 flex gap-2">
+                <button disabled={busy} onClick={() => act(p.id, "published")} className="flex items-center gap-1.5 rounded-full bg-neon/15 px-3 py-1.5 text-sm text-neon hover:bg-neon/25 disabled:opacity-50">
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />} {t("commerce.admin.publish")}
+                </button>
+                <button disabled={busy} onClick={() => act(p.id, "removed")} className="flex items-center gap-1.5 rounded-full bg-accent-red/15 px-3 py-1.5 text-sm text-accent-red hover:bg-accent-red/25 disabled:opacity-50">
+                  <X className="h-4 w-4" /> {t("commerce.admin.remove")}
+                </button>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

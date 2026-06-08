@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { DirectoryExplorer } from "@/components/directory/DirectoryExplorer";
 import { Icon } from "@/components/ui/Icon";
-import { BUSINESSES, DIRECTORY_STATS } from "@/data/businesses";
+import { listBusinesses, getDirectoryStats } from "@/lib/data/businesses";
 import { CATEGORIES } from "@/data/categories";
 import { buildMetadata } from "@/lib/seo";
 import { translate } from "@/lib/i18n";
@@ -23,8 +23,10 @@ export default async function DirectoryPage({
 }) {
   const { city = "all", category = "all" } = await searchParams;
   const lang = await getServerLang();
-  const businesses = await translateBusinesses(BUSINESSES, lang);
+  const [rawBusinesses, stats] = await Promise.all([listBusinesses(), getDirectoryStats()]);
+  const businesses = await translateBusinesses(rawBusinesses, lang);
   const categories = await translateCategories(CATEGORIES, lang);
+  const DIRECTORY_STATS = stats;
 
   return (
     <>

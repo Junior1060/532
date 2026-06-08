@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowBigUp, BadgeCheck, Send, ShieldCheck } from "lucide-react";
-import { COMMUNITY_POSTS } from "@/data/live";
+import { ArrowBigUp, BadgeCheck, Send, ShieldCheck, Loader2 } from "lucide-react";
 import { CITIES } from "@/data/cities";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { createCommunityPost } from "@/app/actions/community";
+import type { FeedPost } from "@/lib/data/community";
 
-type Post = (typeof COMMUNITY_POSTS)[number] & { pending?: boolean };
+type Post = FeedPost & { pending?: boolean };
 
 const TYPES = ["Tip", "Recommendation", "Warning", "Question"];
 const typeTone: Record<string, string> = {
@@ -18,38 +19,52 @@ const typeTone: Record<string, string> = {
   Question: "text-accent-violet bg-accent-violet/10",
 };
 
-export function CommunityFeed() {
+export function CommunityFeed({ initialPosts }: { initialPosts: Post[] }) {
   const { t } = useLanguage();
   const typeLabel = (type: string) => t(`social.type.${type}`);
   const tabLabel = (tab: string) => (tab === "All" ? t("social.community.filterAll") : typeLabel(tab));
-  const [posts, setPosts] = useState<Post[]>(COMMUNITY_POSTS);
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [filter, setFilter] = useState("All");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [type, setType] = useState("Tip");
   const [city, setCity] = useState(CITIES[0].name);
   const [upvoted, setUpvoted] = useState<Record<string, boolean>>({});
+  const [notice, setNotice] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const visible = filter === "All" ? posts : posts.filter((p) => p.type === filter);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (title.trim().length < 4 || body.trim().length < 10) return;
-    const post: Post = {
-      id: `new-${posts.length}-${title.length}`,
-      author: "You",
-      flag: "🌍",
-      city,
-      type,
-      title: title.trim(),
-      body: body.trim(),
-      upvotes: 0,
-      verified: false,
-      pending: true,
-    };
-    setPosts([post, ...posts]);
-    setTitle("");
-    setBody("");
+    setNotice(null);
+    const draftTitle = title.trim();
+    const draftBody = body.trim();
+    startTransition(async () => {
+      const res = await createCommunityPost({ type, title: draftTitle, body: draftBody, cityName: city });
+      setNotice(res.message);
+      if (res.ok) {
+        // Optimistically show the user's pending post at the top of the feed.
+        setPosts((prev) => [
+          {
+            id: `pending-${prev.length}-${draftTitle.length}`,
+            author: "You",
+            flag: "🌍",
+            city,
+            type,
+            title: draftTitle,
+            body: draftBody,
+            upvotes: 0,
+            verified: false,
+            pending: true,
+          },
+          ...prev,
+        ]);
+        setTitle("");
+        setBody("");
+      }
+    });
   }
 
   function upvote(id: string) {
@@ -79,9 +94,10 @@ export function CommunityFeed() {
             className="w-full rounded-2xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-neon/40" />
           <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={4} placeholder={t("social.community.detailsPlaceholder")}
             className="w-full rounded-2xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-neon/40" />
-          <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-full bg-neon px-6 py-3 font-semibold text-ink-950 hover:brightness-110">
-            <Send className="h-4 w-4" /> {t("social.community.post")}
+          <button type="submit" disabled={isPending} className="flex w-full items-center justify-center gap-2 rounded-full bg-neon px-6 py-3 font-semibold text-ink-950 hover:brightness-110 disabled:opacity-60">
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} {t("social.community.post")}
           </button>
+          {notice && <p className="text-center text-xs text-white/70">{notice}</p>}
           <p className="flex items-center justify-center gap-1 text-[11px] text-white/35">
             <ShieldCheck className="h-3 w-3" /> {t("social.community.moderated")}
           </p>

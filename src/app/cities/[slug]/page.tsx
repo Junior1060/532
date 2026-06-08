@@ -5,7 +5,7 @@ import {
   Flag, ShieldAlert, AlertTriangle, Phone, Sparkles, ArrowRight, Landmark, CalendarDays,
 } from "lucide-react";
 import { CITIES, getCity } from "@/data/cities";
-import { getBusinessesByCity } from "@/data/businesses";
+import { getBusinessesByCity } from "@/lib/data/businesses";
 import { getFanHubsByCity } from "@/data/fanHubs";
 import { getServerLang } from "@/lib/locale";
 import { translate } from "@/lib/i18n";
@@ -25,6 +25,9 @@ import { cn, formatNumber, seededInt } from "@/lib/utils";
 export function generateStaticParams() {
   return CITIES.map((c) => ({ slug: c.slug }));
 }
+
+// Revalidate so the featured-businesses section reflects new approvals.
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -47,7 +50,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
   const lang = await getServerLang();
   const city = await translateCity(rawCity, lang);
   const businesses = await translateBusinesses(
-    getBusinessesByCity(rawCity.slug).filter((b) => b.featured).slice(0, 6),
+    (await getBusinessesByCity(rawCity.slug)).filter((b) => b.featured).slice(0, 6),
     lang
   );
   const hubs = await translateFanHubs(getFanHubsByCity(rawCity.slug), lang);
@@ -149,7 +152,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
         <Stagger className="mt-6 grid gap-3 md:grid-cols-2">
           {city.matches.map((m) => (
             <StaggerItem key={m.id}>
-              <MatchCard match={m} flag={city.flag} />
+              <MatchCard match={m} />
             </StaggerItem>
           ))}
         </Stagger>

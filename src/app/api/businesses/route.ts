@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { BUSINESSES } from "@/data/businesses";
 import type { BusinessCategory } from "@/lib/types";
+import { listBusinesses } from "@/lib/data/businesses";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 
-/** GET /api/businesses?city=toronto&category=restaurants&verified=true&q=tacos */
+/**
+ * GET /api/businesses?city=toronto&category=restaurants&q=tacos
+ * Returns verified, public listings from the database (seed fallback in dev).
+ */
 export async function GET(req: Request) {
   const { ok, resetAt } = rateLimit(`businesses:${clientIp(req)}`, 60, 60_000);
   if (!ok) {
@@ -14,22 +17,13 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
-  const city = searchParams.get("city");
-  const category = searchParams.get("category") as BusinessCategory | null;
-  const verified = searchParams.get("verified") === "true";
+  const city = searchParams.get("city") || undefined;
+  const category = (searchParams.get("category") as BusinessCategory | null) || undefined;
   // Cap the free-text query so a giant string can't be used to burn CPU.
-  const q = (searchParams.get("q") || "").slice(0, 100).toLowerCase();
+  const q = (searchParams.get("q") || "").slice(0, 100) || undefined;
   const limit = Math.min(Math.max(Number(searchParams.get("limit")) || 50, 1), 200);
 
-  let list = BUSINESSES.filter((b) => {
-    if (city && b.citySlug !== city) return false;
-    if (category && b.category !== category) return false;
-    if (verified && b.verification !== "verified") return false;
-    if (q && !b.name.toLowerCase().includes(q) && !b.tags.some((t) => t.toLowerCase().includes(q))) return false;
-    return true;
-  });
+  const results = await listBusinesses({ city, category, q, limit });
 
-  list = list.sort((a, b) => Number(b.featured) - Number(a.featured) || b.rating - a.rating).slice(0, limit);
-
-  return NextResponse.json({ count: list.length, results: list });
+  return NextResponse.json({ count: results.length, results });
 }

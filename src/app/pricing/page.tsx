@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { BUSINESS_PLANS, FAN_PLANS, type Plan } from "@/data/pricing";
+import { CheckoutButton } from "@/components/pricing/CheckoutButton";
 import { cn } from "@/lib/utils";
 import { buildMetadata } from "@/lib/seo";
 import { translate, type LanguageCode } from "@/lib/i18n";
@@ -23,6 +24,13 @@ const PLAN_KEY: Record<string, string> = {
   Enterprise: "enterprise",
   Free: "fanFree",
   "532 Premium": "fanPremium",
+};
+
+// Billable plans route through Stripe Checkout; others are plain links.
+const CHECKOUT_PLAN: Record<string, "featured" | "premium" | "fan_premium"> = {
+  Featured: "featured",
+  Premium: "premium",
+  "532 Premium": "fan_premium",
 };
 
 export default async function PricingPage() {
@@ -100,11 +108,19 @@ function PlanCard({ plan, delay, lang }: { plan: Plan; delay: number; lang: Lang
             </li>
           ))}
         </ul>
-        <Link href={plan.href}
-          className={cn("mt-6 flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all",
-            plan.highlight ? "bg-neon text-ink-950 hover:brightness-110" : "glass text-white hover:border-neon/40")}>
-          {tCta}
-        </Link>
+        {CHECKOUT_PLAN[plan.name] ? (
+          <CheckoutButton
+            plan={CHECKOUT_PLAN[plan.name]}
+            label={tCta}
+            className={plan.highlight ? "bg-neon text-ink-950 hover:brightness-110" : "glass text-white hover:border-neon/40"}
+          />
+        ) : (
+          <Link href={plan.href}
+            className={cn("mt-6 flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all",
+              plan.highlight ? "bg-neon text-ink-950 hover:brightness-110" : "glass text-white hover:border-neon/40")}>
+            {tCta}
+          </Link>
+        )}
       </div>
     </Reveal>
   );

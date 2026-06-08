@@ -27,10 +27,8 @@ export function Countdown({
   const { t: tr } = useLanguage();
   const targetMs = new Date(target).getTime();
   const [t, setT] = useState(() => diff(targetMs));
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     setT(diff(targetMs));
     const id = setInterval(() => setT(diff(targetMs)), 1000);
     return () => clearInterval(id);
@@ -60,7 +58,7 @@ export function Countdown({
             )}
             suppressHydrationWarning
           >
-            {mounted ? String(u.value).padStart(2, "0") : "00"}
+            {String(u.value).padStart(2, "0")}
           </span>
           <span className="mt-0.5 text-[10px] uppercase tracking-widest text-white/45">
             {u.label}

@@ -5,7 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { DirectoryExplorer } from "@/components/directory/DirectoryExplorer";
 import { Icon } from "@/components/ui/Icon";
 import { CATEGORIES, getCategory } from "@/data/categories";
-import { getBusinessesByCategory } from "@/data/businesses";
+import { getBusinessesByCategory } from "@/lib/data/businesses";
 import { buildMetadata } from "@/lib/seo";
 import { translate } from "@/lib/i18n";
 import { getServerLang } from "@/lib/locale";
@@ -14,6 +14,9 @@ import { translateBusinesses, translateCategory, translateCategories } from "@/l
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.slug }));
 }
+
+// Revalidate so newly approved listings appear without a redeploy.
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
@@ -33,7 +36,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   if (!rawCat) notFound();
   const lang = await getServerLang();
   const cat = await translateCategory(rawCat, lang);
-  const businesses = await translateBusinesses(getBusinessesByCategory(rawCat.slug), lang);
+  const businesses = await translateBusinesses(await getBusinessesByCategory(rawCat.slug), lang);
   const otherCategories = await translateCategories(
     CATEGORIES.filter((c) => c.slug !== rawCat.slug).slice(0, 8),
     lang

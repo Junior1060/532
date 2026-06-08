@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Sparkles, X, Send, ShieldCheck, ArrowUpRight } from "lucide-react";
-import { askConcierge, SUGGESTED_QUESTIONS, type ConciergeAnswer } from "@/lib/concierge";
+import { SUGGESTED_QUESTIONS, type ConciergeAnswer } from "@/lib/concierge";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 
@@ -16,29 +16,48 @@ interface Msg {
 
 export function AskConcierge() {
   const { t } = useLanguage();
-  const greeting: Msg = { role: "assistant", text: t("misc.concierge.greeting") };
+  const greetingText = t("misc.concierge.greeting");
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Msg[]>([greeting]);
+  const [messages, setMessages] = useState<Msg[]>([{ role: "assistant", text: greetingText }]);
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMessages((current) => {
+      if (current.length !== 1 || current[0].role !== "assistant" || current[0].answer) {
+        return current;
+      }
+      return [{ ...current[0], text: greetingText }];
+    });
+  }, [greetingText]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing, open]);
 
-  function send(text: string) {
+  async function send(text: string) {
     const q = text.trim();
     if (!q) return;
     setInput("");
     setMessages((m) => [...m, { role: "user", text: q }]);
     setTyping(true);
-    // simulate latency for a responsive feel; answer is computed locally
-    window.setTimeout(() => {
-      const answer = askConcierge(q);
+    try {
+      const res = await fetch("/api/concierge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: q }),
+      });
+      const answer: ConciergeAnswer = await res.json();
       setMessages((m) => [...m, { role: "assistant", text: answer.text, answer }]);
+    } catch {
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", text: "Sorry — I couldn't reach the concierge just now. Please try again." },
+      ]);
+    } finally {
       setTyping(false);
-    }, 520);
+    }
   }
 
   return (

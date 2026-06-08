@@ -15,12 +15,15 @@ const csp = [
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   // Supabase / Stripe / Mapbox / translation APIs are HTTPS; ws: covers dev HMR.
   `connect-src 'self' https:${isDev ? " ws:" : ""}`,
-  "upgrade-insecure-requests",
+  // Force HTTPS only in production. In dev the server is plain http (e.g. over
+  // LAN to a phone), so upgrading would break asset loading.
+  ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  // HSTS only in production (it's ignored over http anyway).
+  ...(isDev ? [] : [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]),
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

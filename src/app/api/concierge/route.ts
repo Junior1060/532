@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { askConcierge } from "@/lib/concierge";
+import { listBusinesses } from "@/lib/data/businesses";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 const MAX_QUERY_LEN = 500;
@@ -23,7 +24,8 @@ export async function POST(req: Request) {
     if (query.length > MAX_QUERY_LEN) {
       return NextResponse.json({ error: "query is too long" }, { status: 413 });
     }
-    const answer = askConcierge(query);
+    const businesses = await listBusinesses({ limit: 200 });
+    const answer = askConcierge(query, businesses);
     return NextResponse.json(answer);
   } catch {
     return NextResponse.json({ error: "invalid request" }, { status: 400 });

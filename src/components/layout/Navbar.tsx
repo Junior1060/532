@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, LogIn } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { NAV_LINKS } from "@/lib/nav";
 import { ButtonLink } from "@/components/ui/Button";
 import { LanguageDropdown } from "@/components/layout/LanguageDropdown";
+import { AuthNav } from "@/components/layout/AuthNav";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { cn } from "@/lib/utils";
 
@@ -74,12 +75,7 @@ export function Navbar() {
             >
               <Search className="h-4.5 w-4.5" />
             </Link>
-            <Link
-              href="/login"
-              className="hidden h-9 items-center gap-1.5 rounded-full px-3 text-sm text-white/70 transition-colors hover:text-white md:flex"
-            >
-              <LogIn className="h-4 w-4" /> {t("action.signIn")}
-            </Link>
+            <AuthNav />
             <ButtonLink href="/list-business" size="sm" className="hidden sm:inline-flex">
               {t("action.listBusiness")}
             </ButtonLink>
@@ -114,9 +110,7 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="mt-2 grid grid-cols-2 gap-2">
-                <ButtonLink href="/login" variant="secondary" size="sm">
-                  {t("action.signIn")}
-                </ButtonLink>
+                <AuthNav variant="mobile" />
                 <ButtonLink href="/list-business" size="sm">
                   {t("action.listBusiness")}
                 </ButtonLink>
