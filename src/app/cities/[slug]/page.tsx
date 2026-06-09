@@ -285,10 +285,10 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {hubs.map((h) => (
               <Link key={h.slug} href={`/fan-hubs/${h.slug}`} className="glass glass-hover flex items-center gap-4 rounded-3xl p-5">
-                <span className="text-4xl"><FlagImg emoji={h.flag} /></span>
+                <span className="text-4xl">{h.emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-gray-900">{translate(lang, "cities.detail.fansIn").replace("{country}", h.country).replace("{name}", city.shortName)}</div>
-                  <div className="text-sm text-gray-500">{translate(lang, "cities.detail.members").replace("{count}", formatNumber(h.members)).replace("{vibe}", h.vibe)}</div>
+                  <div className="font-semibold text-gray-900">{h.name}</div>
+                  <div className="text-sm text-gray-500">{[h.venue, h.schedule].filter(Boolean).join(" · ")}</div>
                 </div>
                 <ArrowRight className="h-4 w-4 text-gray-400" />
               </Link>

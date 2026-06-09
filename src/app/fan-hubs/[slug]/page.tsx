@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Users, Calendar, MapPin, MessageSquare, ArrowRight, Sparkles } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, ExternalLink, Building2 } from "lucide-react";
 import { FAN_HUBS, getFanHub } from "@/data/fanHubs";
 import { getCity } from "@/data/cities";
 import { getBusinessesByCity } from "@/lib/data/businesses";
@@ -10,10 +10,7 @@ import { AmbientBackground } from "@/components/visuals/AmbientBackground";
 import { ButtonLink } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { BusinessCard } from "@/components/cards/BusinessCard";
-import { Flag as FlagImg } from "@/components/ui/Flag";
-import { Countdown } from "@/components/visuals/Countdown";
 import { buildMetadata } from "@/lib/seo";
-import { formatNumber } from "@/lib/utils";
 import { translate } from "@/lib/i18n";
 import { getServerLang } from "@/lib/locale";
 import { translateFanHub, translateBusinesses } from "@/lib/translateData";
@@ -29,9 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const lang = await getServerLang();
     return buildMetadata({ title: translate(lang, "social.fanHub.notFound") });
   }
-  const city = getCity(hub.citySlug);
   return buildMetadata({
-    title: `${hub.country} Fans in ${city?.name}`,
+    title: hub.name,
     description: hub.description,
     path: `/fan-hubs/${hub.slug}`,
   });
@@ -57,20 +53,19 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
           <Reveal>
             <Link href="/fan-hubs" className="text-sm text-gray-500 hover:text-neon-ink">{translate(lang, "social.fanHub.backToAll")}</Link>
             <div className="mt-4 flex items-center gap-4">
-              <span className="text-6xl"><FlagImg emoji={hub.flag} /></span>
+              <span className="text-6xl">{hub.emoji}</span>
               <div>
-                <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">{translate(lang, "social.fanHubs.fansIn").replace("{country}", hub.country).replace("{city}", city.name)}</h1>
+                <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">{hub.name}</h1>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <Badge tone="neon"><Users className="h-3.5 w-3.5" /> {translate(lang, "social.fanHub.members").replace("{count}", formatNumber(hub.members))}</Badge>
                   <Badge tone="neutral"><MapPin className="h-3.5 w-3.5" /> {city.name}</Badge>
-                  <Badge tone="violet">{hub.vibe}</Badge>
+                  {hub.schedule && <Badge tone="neon"><Calendar className="h-3.5 w-3.5" /> {hub.schedule}</Badge>}
                 </div>
               </div>
             </div>
             <p className="mt-5 max-w-2xl text-gray-600">{hub.description}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="#join">{translate(lang, "social.fanHub.joinHub")} <ArrowRight className="h-4 w-4" /></ButtonLink>
-              <ButtonLink href={`/cities/${city.slug}`} variant="secondary">{translate(lang, "social.fanHub.cityGuide").replace("{city}", city.name)}</ButtonLink>
+              <ButtonLink href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{translate(lang, "social.fanHub.officialSite")} <ExternalLink className="h-4 w-4" /></ButtonLink>
+              <ButtonLink href={`/cities/${city.slug}`} variant="secondary">{translate(lang, "social.fanHub.cityGuide").replace("{city}", city.name)} <ArrowRight className="h-4 w-4" /></ButtonLink>
             </div>
           </Reveal>
         </div>
@@ -79,36 +74,50 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
       <Section className="py-10">
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           <Reveal className="glass rounded-3xl p-6">
-            <div className="flex items-center gap-2 text-neon-ink"><Calendar className="h-5 w-5" /><h2 className="text-lg font-semibold text-gray-900">{translate(lang, "social.fanHub.nextWatchParty")}</h2></div>
-            <div className="mt-4 rounded-2xl border border-neon-border bg-neon-subtle p-5">
-              <div className="text-xl font-semibold text-gray-900">{hub.nextWatchParty.match}</div>
-              <div className="mt-1 flex items-center gap-2 text-sm text-gray-600"><MapPin className="h-4 w-4 text-neon-ink" /> {hub.nextWatchParty.venue}</div>
-              <div className="mt-4"><Countdown target={hub.nextWatchParty.date} compact /></div>
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              {[
-                translate(lang, "social.fanHub.meetupSpot"),
-                translate(lang, "social.fanHub.groupChat"),
-                translate(lang, "social.fanHub.localTips"),
-              ].map((label, i) => (
-                <div key={label} className="rounded-2xl border border-gray-200 p-4 text-center">
-                  <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-gray-50 text-neon-ink">
-                    {[<MapPin key="m" className="h-4 w-4" />, <MessageSquare key="c" className="h-4 w-4" />, <Sparkles key="s" className="h-4 w-4" />][i]}
+            <div className="flex items-center gap-2 text-neon-ink"><MapPin className="h-5 w-5" /><h2 className="text-lg font-semibold text-gray-900">{translate(lang, "social.fanHub.location")}</h2></div>
+            <dl className="mt-4 space-y-3">
+              {hub.venue && (
+                <div className="flex items-start gap-3 rounded-2xl border border-gray-200 p-4">
+                  <Building2 className="mt-0.5 h-4 w-4 text-neon-ink" />
+                  <div>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">{translate(lang, "social.fanHub.venue")}</dt>
+                    <dd className="text-sm text-gray-900">{hub.venue}</dd>
                   </div>
-                  <div className="mt-2 text-sm text-gray-700">{label}</div>
                 </div>
-              ))}
-            </div>
+              )}
+              {hub.area && (
+                <div className="flex items-start gap-3 rounded-2xl border border-gray-200 p-4">
+                  <MapPin className="mt-0.5 h-4 w-4 text-neon-ink" />
+                  <div>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">{translate(lang, "social.fanHub.area")}</dt>
+                    <dd className="text-sm text-gray-900">{hub.area}</dd>
+                  </div>
+                </div>
+              )}
+              {hub.schedule && (
+                <div className="flex items-start gap-3 rounded-2xl border border-gray-200 p-4">
+                  <Calendar className="mt-0.5 h-4 w-4 text-neon-ink" />
+                  <div>
+                    <dt className="text-xs uppercase tracking-wide text-gray-400">{translate(lang, "social.fanHub.dates")}</dt>
+                    <dd className="text-sm text-gray-900">{hub.schedule}</dd>
+                  </div>
+                </div>
+              )}
+            </dl>
           </Reveal>
 
-          <Reveal delay={0.1} id="join" className="glass rounded-3xl p-6">
-            <h2 className="text-lg font-semibold text-gray-900">{translate(lang, "social.fanHub.joinCountryFans").replace("{country}", hub.country)}</h2>
-            <p className="mt-2 text-sm text-gray-600">{translate(lang, "social.fanHub.joinBlurb").replace("{city}", city.name)}</p>
-            <div className="mt-4 space-y-3">
-              <input placeholder={translate(lang, "social.fanHub.yourName")} className="w-full rounded-2xl border border-gray-200 bg-ink-950/60 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neon/40" />
-              <input placeholder={translate(lang, "social.fanHub.email")} className="w-full rounded-2xl border border-gray-200 bg-ink-950/60 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neon/40" />
-              <button className="w-full rounded-full bg-neon px-6 py-3 font-semibold text-gray-900 hover:brightness-110">{translate(lang, "social.fanHub.joinButton")}</button>
-            </div>
+          <Reveal delay={0.1} className="glass rounded-3xl p-6">
+            <div className="flex items-center gap-2 text-neon-ink"><ExternalLink className="h-5 w-5" /><h2 className="text-lg font-semibold text-gray-900">{translate(lang, "social.fanHub.officialSite")}</h2></div>
+            <p className="mt-2 text-sm text-gray-600">{translate(lang, "social.fanHub.officialBlurb")}</p>
+            <a
+              href={hub.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 flex items-center gap-2 break-all rounded-2xl border border-neon-border bg-neon-subtle p-4 text-sm text-gray-900 hover:brightness-105"
+            >
+              <ExternalLink className="h-4 w-4 shrink-0 text-neon-ink" />
+              {hub.sourceUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+            </a>
           </Reveal>
         </div>
       </Section>

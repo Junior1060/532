@@ -113,15 +113,20 @@ export interface Business {
   photos?: string[]; // Google photo reference names, served via /api/places/photo
 }
 
+export type FanHubKind = "fan-festival" | "supporter-group";
+
 export interface FanHub {
   slug: string;
-  country: string;
-  flag: string;
   citySlug: string;
-  members: number;
-  nextWatchParty: { venue: string; match: string; date: string };
-  description: string;
-  vibe: string;
+  kind: FanHubKind;
+  name: string; // display name (e.g. "FIFA Fan Festival — Toronto", "American Outlaws Boston")
+  emoji: string; // card icon: 🎉 for festivals, a national flag, or ⚽ for club groups
+  country?: string; // national team supported (supporter groups), when applicable
+  venue?: string; // real venue / location
+  area?: string; // neighborhood / area
+  schedule?: string; // dates or schedule, when published
+  description: string; // honest one- or two-line description
+  sourceUrl: string; // official / verifiable link — the data is sourced, not invented
 }
 
 export interface CategoryMeta {

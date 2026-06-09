@@ -42,9 +42,7 @@ export const citiesDict: Record<LanguageCode, Dictionary> = {
     "cities.detail.directory.title": "Verified services in {name}",
     "cities.detail.seeAll": "See all",
     "cities.detail.community.eyebrow": "Community",
-    "cities.detail.community.title": "Fan hubs in {name}",
-    "cities.detail.fansIn": "{country} fans in {name}",
-    "cities.detail.members": "{count} members · {vibe}",
+    "cities.detail.community.title": "Fan festivals in {name}",
   },
   ar: {
     "cities.list.eyebrow": "16 مدينة مضيفة · 3 دول",
@@ -83,9 +81,7 @@ export const citiesDict: Record<LanguageCode, Dictionary> = {
     "cities.detail.directory.title": "خدمات موثقة في {name}",
     "cities.detail.seeAll": "عرض الكل",
     "cities.detail.community.eyebrow": "المجتمع",
-    "cities.detail.community.title": "مناطق المشجعين في {name}",
-    "cities.detail.fansIn": "مشجعو {country} في {name}",
-    "cities.detail.members": "{count} عضو · {vibe}",
+    "cities.detail.community.title": "مهرجانات المشجعين في {name}",
   },
   fr: {
     "cities.list.eyebrow": "16 villes hôtes · 3 pays",
@@ -124,9 +120,7 @@ export const citiesDict: Record<LanguageCode, Dictionary> = {
     "cities.detail.directory.title": "Services vérifiés à {name}",
     "cities.detail.seeAll": "Voir tout",
     "cities.detail.community.eyebrow": "Communauté",
-    "cities.detail.community.title": "Espaces fans à {name}",
-    "cities.detail.fansIn": "Fans du {country} à {name}",
-    "cities.detail.members": "{count} membres · {vibe}",
+    "cities.detail.community.title": "Fan Festivals à {name}",
   },
   es: {
     "cities.list.eyebrow": "16 ciudades anfitrionas · 3 países",
@@ -165,9 +159,7 @@ export const citiesDict: Record<LanguageCode, Dictionary> = {
     "cities.detail.directory.title": "Servicios verificados en {name}",
     "cities.detail.seeAll": "Ver todo",
     "cities.detail.community.eyebrow": "Comunidad",
-    "cities.detail.community.title": "Zonas de aficionados en {name}",
-    "cities.detail.fansIn": "Aficionados de {country} en {name}",
-    "cities.detail.members": "{count} miembros · {vibe}",
+    "cities.detail.community.title": "Fan Festivals en {name}",
   },
   de: {
     "cities.list.eyebrow": "16 Austragungsstädte · 3 Länder",
@@ -206,8 +198,6 @@ export const citiesDict: Record<LanguageCode, Dictionary> = {
     "cities.detail.directory.title": "Verifizierte Dienste in {name}",
     "cities.detail.seeAll": "Alle ansehen",
     "cities.detail.community.eyebrow": "Community",
-    "cities.detail.community.title": "Fan-Zonen in {name}",
-    "cities.detail.fansIn": "{country}-Fans in {name}",
-    "cities.detail.members": "{count} Mitglieder · {vibe}",
+    "cities.detail.community.title": "Fan Festivals in {name}",
   },
 };

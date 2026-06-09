@@ -32,7 +32,7 @@ const CITY_FIELDS = [
 ];
 
 const BUSINESS_FIELDS = ["description", "tags.*"];
-const FANHUB_FIELDS = ["description", "vibe"];
+const FANHUB_FIELDS = ["description", "area"];
 const CATEGORY_FIELDS = ["label", "blurb"];
 
 export const translateCity = (c: City, lang: LanguageCode) =>
