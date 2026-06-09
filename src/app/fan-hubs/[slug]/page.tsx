@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Calendar, MapPin, ArrowRight, ExternalLink, Building2 } from "lucide-react";
 import { FAN_HUBS, getFanHub } from "@/data/fanHubs";
 import { getCity } from "@/data/cities";
-import { CITY_IMAGES } from "@/data/cityImages";
+import { CITY_IMAGES, FANHUB_IMAGES } from "@/data/cityImages";
 import { getBusinessesByCity } from "@/lib/data/businesses";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -42,7 +42,7 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
   const lang = await getServerLang();
   const hub = await translateFanHub(rawHub, lang);
   const city = getCity(rawHub.citySlug)!;
-  const photo = CITY_IMAGES[rawHub.citySlug];
+  const photo = FANHUB_IMAGES[rawHub.slug] ?? CITY_IMAGES[rawHub.citySlug];
   const bars = await translateBusinesses(
     (await getBusinessesByCity(city.slug)).filter((b) => b.category === "bars" || b.category === "restaurants").slice(0, 3),
     lang,
@@ -64,10 +64,7 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10" />
             <div className="container-pad absolute inset-x-0 bottom-0 pb-5">
               <Link href="/fan-hubs" className="text-sm text-white/80 hover:text-white">{translate(lang, "social.fanHub.backToAll")}</Link>
-              <div className="mt-2 flex items-center gap-3">
-                <span className="text-4xl drop-shadow-lg">{hub.emoji}</span>
-                <h1 className="font-display text-3xl font-bold text-white drop-shadow-lg md:text-4xl">{hub.name}</h1>
-              </div>
+              <h1 className="mt-2 font-display text-3xl font-bold text-white drop-shadow-lg md:text-4xl">{hub.name}</h1>
             </div>
           </div>
         ) : (
@@ -78,10 +75,7 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
             {!photo && (
               <>
                 <Link href="/fan-hubs" className="text-sm text-gray-500 hover:text-neon-ink">{translate(lang, "social.fanHub.backToAll")}</Link>
-                <div className="mt-4 flex items-center gap-4">
-                  <span className="text-6xl">{hub.emoji}</span>
-                  <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">{hub.name}</h1>
-                </div>
+                <h1 className="mt-4 font-display text-3xl font-bold text-gray-900 md:text-4xl">{hub.name}</h1>
               </>
             )}
             <div className="flex flex-wrap items-center gap-2">

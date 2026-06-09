@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   MapPin, Users, CloudSun, Clock, Banknote, Languages, TrainFront,
   Flag, ShieldAlert, AlertTriangle, Phone, Sparkles, ArrowRight, Landmark, CalendarDays,
@@ -7,6 +8,7 @@ import {
 import { CITIES, getCity } from "@/data/cities";
 import { getBusinessesByCity } from "@/lib/data/businesses";
 import { getFanHubsByCity } from "@/data/fanHubs";
+import { CITY_IMAGES, FANHUB_IMAGES } from "@/data/cityImages";
 import { getServerLang } from "@/lib/locale";
 import { translate } from "@/lib/i18n";
 import { translateCity, translateBusinesses, translateFanHubs } from "@/lib/translateData";
@@ -283,16 +285,21 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
         <Section className="py-8">
           <SectionHeading eyebrow={translate(lang, "cities.detail.community.eyebrow")} title={translate(lang, "cities.detail.community.title").replace("{name}", city.shortName)} />
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {hubs.map((h) => (
-              <Link key={h.slug} href={`/fan-hubs/${h.slug}`} className="glass glass-hover flex items-center gap-4 rounded-3xl p-5">
-                <span className="text-4xl">{h.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-gray-900">{h.name}</div>
-                  <div className="text-sm text-gray-500">{[h.venue, h.schedule].filter(Boolean).join(" · ")}</div>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400" />
-              </Link>
-            ))}
+            {hubs.map((h) => {
+              const photo = FANHUB_IMAGES[h.slug] ?? CITY_IMAGES[h.citySlug];
+              return (
+                <Link key={h.slug} href={`/fan-hubs/${h.slug}`} className="glass glass-hover flex items-center gap-4 rounded-3xl p-4">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
+                    {photo && <Image src={photo} alt={h.name} fill sizes="64px" className="object-cover" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold text-gray-900">{h.name}</div>
+                    <div className="text-sm text-gray-500">{[h.venue, h.schedule].filter(Boolean).join(" · ")}</div>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400" />
+                </Link>
+              );
+            })}
           </div>
         </Section>
       )}
