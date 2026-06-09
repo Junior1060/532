@@ -9,7 +9,7 @@ export interface ConciergeAnswer {
   chips?: { label: string; href: string }[];
 }
 
-const FALLBACK: ConciergeAnswer = {
+export const CONCIERGE_FALLBACK: ConciergeAnswer = {
   text:
     "I don't currently have verified information for that request. I can only answer from 532's internal city data, the verified business directory, and official 2026 FIFA World Cup information. Try asking about a host city, getting to a stadium, food or pharmacies near a venue, fan zones, or safety tips.",
   sources: [],
@@ -20,7 +20,7 @@ const FALLBACK: ConciergeAnswer = {
   ],
 };
 
-function findCity(q: string) {
+export function findCity(q: string) {
   return CITIES.find(
     (c) =>
       q.includes(c.slug.replace(/-/g, " ")) ||
@@ -35,7 +35,7 @@ function findCity(q: string) {
   );
 }
 
-function detectCategory(q: string): BusinessCategory | undefined {
+export function detectCategory(q: string): BusinessCategory | undefined {
   if (/\b(eat|food|restaurant|dinner|lunch|halal|hungry|meal)\b/.test(q)) return "restaurants";
   if (/\b(hotel|stay|sleep|room|accommodation)\b/.test(q)) return "hotels";
   if (/\b(bar|pub|drink|watch the (game|match)|beer)\b/.test(q)) return "bars";
@@ -53,7 +53,7 @@ function detectCategory(q: string): BusinessCategory | undefined {
 
 export function askConcierge(query: string, businesses: Business[] = []): ConciergeAnswer {
   const q = query.toLowerCase().trim();
-  if (!q) return FALLBACK;
+  if (!q) return CONCIERGE_FALLBACK;
 
   const city = findCity(q);
   const category = detectCategory(q);
@@ -186,7 +186,12 @@ export function askConcierge(query: string, businesses: Business[] = []): Concie
     };
   }
 
-  return FALLBACK;
+  return CONCIERGE_FALLBACK;
+}
+
+/** True when the rule matcher couldn't answer — the signal to escalate to the LLM. */
+export function isConciergeFallback(answer: ConciergeAnswer): boolean {
+  return answer.text === CONCIERGE_FALLBACK.text;
 }
 
 export const SUGGESTED_QUESTIONS = [

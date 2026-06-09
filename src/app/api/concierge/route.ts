@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { askConcierge } from "@/lib/concierge";
+import { askConcierge, isConciergeFallback } from "@/lib/concierge";
+import { askConciergeLLM } from "@/lib/conciergeLLM";
 import { listBusinesses } from "@/lib/data/businesses";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 
@@ -25,8 +26,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "query is too long" }, { status: 413 });
     }
     const businesses = await listBusinesses({ limit: 200 });
-    const answer = askConcierge(query, businesses);
-    return NextResponse.json(answer);
+
+    // Hybrid: the free rule matcher answers first. Only when it can't (a
+    // genuine miss) do we escalate to the grounded LLM — which itself returns
+    // null if unconfigured or erroring, leaving the friendly fallback in place.
+    const ruleAnswer = askConcierge(query, businesses);
+    if (!isConciergeFallback(ruleAnswer)) {
+      return NextResponse.json(ruleAnswer);
+    }
+
+    const llmAnswer = await askConciergeLLM(query, businesses);
+    return NextResponse.json(llmAnswer ?? ruleAnswer);
   } catch {
     return NextResponse.json({ error: "invalid request" }, { status: 400 });
   }
