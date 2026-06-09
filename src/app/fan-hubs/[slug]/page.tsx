@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, MapPin, ArrowRight, ExternalLink, Building2 } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, ExternalLink, Building2, Navigation } from "lucide-react";
 import { FAN_HUBS, getFanHub } from "@/data/fanHubs";
 import { getCity } from "@/data/cities";
 import { CITY_IMAGES, FANHUB_IMAGES } from "@/data/cityImages";
@@ -43,6 +43,9 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
   const hub = await translateFanHub(rawHub, lang);
   const city = getCity(rawHub.citySlug)!;
   const photo = FANHUB_IMAGES[rawHub.slug] ?? CITY_IMAGES[rawHub.citySlug];
+  // Google Maps search for the venue — uses the canonical (untranslated) venue/area + city.
+  const mapsQuery = encodeURIComponent([rawHub.venue, rawHub.area, city.name].filter(Boolean).join(", "));
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
   const bars = await translateBusinesses(
     (await getBusinessesByCity(city.slug)).filter((b) => b.category === "bars" || b.category === "restaurants").slice(0, 3),
     lang,
@@ -101,7 +104,11 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
                   <Building2 className="mt-0.5 h-4 w-4 text-neon-ink" />
                   <div>
                     <dt className="text-xs uppercase tracking-wide text-gray-400">{translate(lang, "social.fanHub.venue")}</dt>
-                    <dd className="text-sm text-gray-900">{hub.venue}</dd>
+                    <dd className="text-sm">
+                      <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-gray-900 underline-offset-2 hover:text-neon-ink hover:underline">
+                        {hub.venue} <ExternalLink className="h-3 w-3 text-gray-400" />
+                      </a>
+                    </dd>
                   </div>
                 </div>
               )}
@@ -124,6 +131,9 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
                 </div>
               )}
             </dl>
+            <ButtonLink href={mapsUrl} target="_blank" rel="noopener noreferrer" variant="secondary" className="mt-4 w-full">
+              <Navigation className="h-4 w-4" /> {translate(lang, "social.fanHub.directions")}
+            </ButtonLink>
           </Reveal>
 
           <Reveal delay={0.1} className="glass rounded-3xl p-6">

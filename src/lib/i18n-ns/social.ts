@@ -20,6 +20,7 @@ export const socialDict: Record<LanguageCode, Dictionary> = {
     "social.fanHub.area": "Area",
     "social.fanHub.dates": "Dates",
     "social.fanHub.officialSite": "Official site",
+    "social.fanHub.directions": "Get directions",
     "social.fanHub.officialBlurb":
       "Details are sourced from the official host-city site. Check it for the latest hours, programming, and any ticketing.",
     "social.fanHub.recommendedSpots": "Food & drink near {city}",
@@ -63,6 +64,7 @@ export const socialDict: Record<LanguageCode, Dictionary> = {
     "social.fanHub.area": "المنطقة",
     "social.fanHub.dates": "التواريخ",
     "social.fanHub.officialSite": "الموقع الرسمي",
+    "social.fanHub.directions": "عرض الاتجاهات",
     "social.fanHub.officialBlurb":
       "التفاصيل مأخوذة من الموقع الرسمي للمدينة المضيفة. راجعه لمعرفة أحدث المواعيد والبرامج وأي تذاكر.",
     "social.fanHub.recommendedSpots": "مطاعم ومشارب قرب {city}",
@@ -103,6 +105,7 @@ export const socialDict: Record<LanguageCode, Dictionary> = {
     "social.fanHub.area": "Quartier",
     "social.fanHub.dates": "Dates",
     "social.fanHub.officialSite": "Site officiel",
+    "social.fanHub.directions": "Itinéraire",
     "social.fanHub.officialBlurb":
       "Les informations proviennent du site officiel de la ville hôte. Consultez-le pour les horaires, la programmation et la billetterie les plus récents.",
     "social.fanHub.recommendedSpots": "Restaurants et bars près de {city}",
@@ -143,6 +146,7 @@ export const socialDict: Record<LanguageCode, Dictionary> = {
     "social.fanHub.area": "Zona",
     "social.fanHub.dates": "Fechas",
     "social.fanHub.officialSite": "Sitio oficial",
+    "social.fanHub.directions": "Cómo llegar",
     "social.fanHub.officialBlurb":
       "La información procede del sitio oficial de la ciudad anfitriona. Consúltalo para conocer los horarios, la programación y las entradas más recientes.",
     "social.fanHub.recommendedSpots": "Comida y bebida cerca de {city}",
@@ -183,6 +187,7 @@ export const socialDict: Record<LanguageCode, Dictionary> = {
     "social.fanHub.area": "Gegend",
     "social.fanHub.dates": "Termine",
     "social.fanHub.officialSite": "Offizielle Website",
+    "social.fanHub.directions": "Route anzeigen",
     "social.fanHub.officialBlurb":
       "Die Angaben stammen von der offiziellen Website der Gastgeberstadt. Dort findest du die aktuellen Öffnungszeiten, das Programm und etwaige Tickets.",
     "social.fanHub.recommendedSpots": "Essen & Trinken in der Nähe von {city}",
