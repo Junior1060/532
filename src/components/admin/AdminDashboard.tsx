@@ -101,7 +101,7 @@ export function AdminDashboard({
         </div>
       </aside>
 
-      <div>
+      <div className="min-w-0">
         {tab === "overview" && <Overview stats={liveStats} onJump={setTab} />}
         {tab === "submissions" && <Submissions pending={pending} setPending={setPending} />}
         {tab === "imports" && <ImportWizard />}
