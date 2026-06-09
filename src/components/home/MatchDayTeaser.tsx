@@ -13,13 +13,13 @@ export async function MatchDayTeaser() {
     <Section>
       <div className="grid items-center gap-10 lg:grid-cols-2">
         <Reveal>
-          <div className="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-neon">
+          <div className="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-neon-ink">
             <Radio className="h-4 w-4" /> {translate(lang, "home.matchDay.eyebrow")}
           </div>
-          <h2 className="text-balance text-3xl font-bold text-white md:text-4xl">
+          <h2 className="text-balance text-3xl font-bold text-gray-900 md:text-4xl">
             {translate(lang, "home.matchDay.title")}
           </h2>
-          <p className="mt-4 text-white/60">
+          <p className="mt-4 text-gray-600">
             {translate(lang, "home.matchDay.description")}
           </p>
 
@@ -30,8 +30,8 @@ export async function MatchDayTeaser() {
               { icon: Train, label: translate(lang, "home.matchDay.feature.transit") },
               { icon: ShieldAlert, label: translate(lang, "home.matchDay.feature.emergency") },
             ].map((f) => (
-              <div key={f.label} className="flex items-start gap-2.5 text-sm text-white/70">
-                <f.icon className="mt-0.5 h-4 w-4 shrink-0 text-neon" />
+              <div key={f.label} className="flex items-start gap-2.5 text-sm text-gray-700">
+                <f.icon className="mt-0.5 h-4 w-4 shrink-0 text-neon-ink" />
                 {f.label}
               </div>
             ))}
@@ -45,24 +45,23 @@ export async function MatchDayTeaser() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="relative overflow-hidden rounded-4xl border border-white/10 bg-ink-900 p-5">
-            <div className="absolute inset-0 bg-grid-neon opacity-20" />
+          <div className="relative overflow-hidden rounded-4xl border border-gray-200 bg-white p-5 shadow-sm">
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neon text-ink-950">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neon text-gray-900">
                     <Radio className="h-5 w-5" />
                   </span>
                   <div>
-                    <div className="text-sm font-semibold text-white">BMO Field · Toronto</div>
-                    <div className="text-[11px] text-white/45">{translate(lang, "home.matchDay.card.matchDay")}</div>
+                    <div className="text-sm font-semibold text-gray-900">BMO Field · Toronto</div>
+                    <div className="text-[11px] text-gray-400">{translate(lang, "home.matchDay.card.matchDay")}</div>
                   </div>
                 </div>
                 <LiveDot />
               </div>
 
               {/* mini map */}
-              <div className="relative mt-4 h-44 overflow-hidden rounded-2xl border border-white/[0.07] bg-ink-950">
+              <div className="relative mt-4 h-44 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50">
                 <div className="absolute inset-0 bg-grid opacity-40" />
                 {/* route line */}
                 <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 180" fill="none">
@@ -82,7 +81,7 @@ export async function MatchDayTeaser() {
                     </span>
                   </span>
                 ))}
-                <div className="absolute bottom-2 left-2 rounded-lg bg-ink-950/70 px-2 py-1 text-[10px] text-white/60 backdrop-blur">
+                <div className="absolute bottom-2 left-2 rounded-lg border border-gray-200 bg-white/90 px-2 py-1 text-[10px] text-gray-600 backdrop-blur">
                   {translate(lang, "home.matchDay.card.fastestRoute")}
                 </div>
               </div>

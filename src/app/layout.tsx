@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050507",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${display.variable} ${mono.variable}`}>
-      <body className="min-h-screen bg-ink-950 antialiased">
+      <body className="min-h-screen bg-white text-gray-700 antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

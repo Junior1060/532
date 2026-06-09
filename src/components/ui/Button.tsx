@@ -6,22 +6,22 @@ type Variant = "primary" | "secondary" | "ghost" | "outline";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 font-medium rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60 disabled:opacity-50 disabled:pointer-events-none select-none whitespace-nowrap";
+  "inline-flex items-center justify-center gap-2 font-medium rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/40 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none whitespace-nowrap";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-neon text-ink-950 hover:shadow-glow hover:brightness-110 active:scale-[0.98] font-semibold",
+    "bg-neon text-gray-900 hover:brightness-105 hover:shadow-sm active:scale-[0.98] font-semibold",
   secondary:
-    "glass text-white hover:border-neon/40 hover:bg-white/[0.07] active:scale-[0.98]",
-  ghost: "text-white/80 hover:text-white hover:bg-white/[0.06]",
+    "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 active:scale-[0.98]",
+  ghost: "text-gray-600 hover:text-gray-900 hover:bg-gray-100",
   outline:
-    "border border-white/15 text-white hover:border-neon/50 hover:text-neon active:scale-[0.98]",
+    "border border-gray-300 text-gray-900 hover:border-neon hover:text-neon-ink active:scale-[0.98]",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "text-sm px-4 py-2",
-  md: "text-sm px-5 py-2.5",
-  lg: "text-base px-7 py-3.5",
+  sm: "text-sm px-4 py-2.5",
+  md: "text-sm px-5 py-3",
+  lg: "text-base px-7 py-4",
 };
 
 type CommonProps = {

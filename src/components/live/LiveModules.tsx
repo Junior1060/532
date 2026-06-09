@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
 const toneMap: Record<string, string> = {
-  neon: "text-neon",
+  neon: "text-neon-ink",
   amber: "text-accent-amber",
   blue: "text-accent-blue",
   red: "text-accent-red",
@@ -43,15 +43,14 @@ export function LiveModules() {
         >
           <div className="flex items-center justify-between">
             <Icon name={m.icon} className={cn("h-4 w-4", toneMap[m.tone])} />
-            <span className="text-[10px] font-medium uppercase tracking-wider text-white/40">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-gray-400">
               {m.trend}
             </span>
           </div>
           <div className={cn("mt-3 text-2xl font-semibold", toneMap[m.tone])}>
             {m.label === "Fans active now" ? <LiveCounter base={12421} /> : m.value}
           </div>
-          <div className="mt-0.5 text-xs text-white/45">{m.label}</div>
-          <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-neon/5 blur-2xl" />
+          <div className="mt-0.5 text-xs text-gray-500">{m.label}</div>
         </motion.div>
       ))}
     </div>
@@ -63,7 +62,7 @@ export function StadiumSignals({ className }: { className?: string }) {
     <div className={cn("grid grid-cols-2 gap-2.5 md:grid-cols-3", className)}>
       {STADIUM_SIGNALS.map((s) => (
         <div key={s.label} className="glass rounded-2xl px-3.5 py-3">
-          <div className="text-[11px] text-white/45">{s.label}</div>
+          <div className="text-[11px] text-gray-500">{s.label}</div>
           <div className={cn("mt-1 text-base font-semibold", toneMap[s.tone])}>{s.value}</div>
         </div>
       ))}

@@ -2,6 +2,7 @@ import type { CategoryMeta, NearMeCategory, BusinessCategory } from "@/lib/types
 
 export const CATEGORIES: CategoryMeta[] = [
   { slug: "restaurants", label: "Restaurants", icon: "UtensilsCrossed", blurb: "Verified spots to eat near every stadium and fan zone." },
+  { slug: "cafes", label: "Cafes", icon: "Coffee", blurb: "Coffee shops and casual spots to refuel between matches." },
   { slug: "hotels", label: "Hotels", icon: "BedDouble", blurb: "Stays from budget to luxury, ranked by distance and trust." },
   { slug: "transportation", label: "Transportation", icon: "TrainFront", blurb: "Transit help, passes, and getting-around guidance." },
   { slug: "safe-rides", label: "Safe Rides", icon: "Car", blurb: "Vetted drivers and verified pickup partners." },
@@ -9,6 +10,9 @@ export const CATEGORIES: CategoryMeta[] = [
   { slug: "translators", label: "Translators", icon: "Languages", blurb: "On-demand interpreters for any language barrier." },
   { slug: "photographers", label: "Photographers", icon: "Camera", blurb: "Capture the trip with verified local photographers." },
   { slug: "bars", label: "Bars", icon: "Beer", blurb: "Where to watch the match with fellow fans." },
+  { slug: "sports-bars", label: "Sports Bars", icon: "Trophy", blurb: "Big screens and a roaring crowd for every match." },
+  { slug: "grocery-stores", label: "Grocery Stores", icon: "ShoppingCart", blurb: "Supermarkets and corner shops for trip essentials." },
+  { slug: "attractions", label: "Attractions", icon: "Landmark", blurb: "Must-see sights and things to do between matches." },
   { slug: "fan-events", label: "Fan Events", icon: "PartyPopper", blurb: "Watch parties, meetups, and supporter gatherings." },
   { slug: "luggage-storage", label: "Luggage Storage", icon: "Luggage", blurb: "Secure bag drop near stations and stadiums." },
   { slug: "currency-exchange", label: "Currency Exchange", icon: "Banknote", blurb: "Fair-rate, licensed exchange you can trust." },

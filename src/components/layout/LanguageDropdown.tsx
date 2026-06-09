@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Globe, Check } from "lucide-react";
 import { LANGUAGES } from "@/lib/i18n";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { Flag as FlagImg } from "@/components/ui/Flag";
 import { cn } from "@/lib/utils";
 
 /**
@@ -40,7 +41,7 @@ export function LanguageDropdown({ className }: { className?: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 items-center gap-1.5 rounded-full px-2.5 text-sm text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+        className="flex h-9 items-center gap-1.5 rounded-full px-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900"
         aria-label="Select language"
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -58,7 +59,7 @@ export function LanguageDropdown({ className }: { className?: string }) {
             transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             role="listbox"
             aria-label="Languages"
-            className="absolute end-0 z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-white/[0.08] bg-ink-950/95 p-1.5 shadow-card backdrop-blur-xl"
+            className="absolute end-0 z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-gray-200 bg-white p-1.5 shadow-lg"
           >
             {LANGUAGES.map((l) => {
               const active = l.code === lang;
@@ -75,13 +76,13 @@ export function LanguageDropdown({ className }: { className?: string }) {
                     className={cn(
                       "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors",
                       active
-                        ? "bg-white/[0.07] text-white"
-                        : "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                     )}
                   >
-                    <span className="text-base leading-none">{l.flag}</span>
+                    <span className="text-base leading-none"><FlagImg emoji={l.flag} /></span>
                     <span className="flex-1 text-start">{l.name}</span>
-                    {active && <Check className="h-4 w-4 text-neon" />}
+                    {active && <Check className="h-4 w-4 text-neon-ink" />}
                   </button>
                 </li>
               );

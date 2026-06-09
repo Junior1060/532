@@ -65,11 +65,11 @@ export default async function PricingPage() {
 
       <Section className="py-10">
         <div className="glass rounded-4xl p-8 text-center md:p-12">
-          <h2 className="text-2xl font-semibold text-white md:text-3xl">{translate(lang, "commerce.pricing.faq.title")}</h2>
-          <p className="mx-auto mt-3 max-w-lg text-white/55">
+          <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl">{translate(lang, "commerce.pricing.faq.title")}</h2>
+          <p className="mx-auto mt-3 max-w-lg text-gray-600">
             {translate(lang, "commerce.pricing.faq.body")}
           </p>
-          <Link href="/list-business" className="mt-6 inline-flex rounded-full bg-neon px-7 py-3.5 font-semibold text-ink-950 hover:brightness-110">
+          <Link href="/list-business" className="mt-6 inline-flex rounded-full bg-neon px-7 py-3.5 font-semibold text-gray-900 hover:brightness-110">
             {translate(lang, "commerce.pricing.faq.cta")}
           </Link>
         </div>
@@ -88,23 +88,23 @@ function PlanCard({ plan, delay, lang }: { plan: Plan; delay: number; lang: Lang
     <Reveal delay={delay}>
       <div className={cn(
         "relative flex h-full flex-col rounded-3xl border p-6",
-        plan.highlight ? "border-neon/40 bg-gradient-to-b from-neon/[0.08] to-ink-900 shadow-glow" : "border-white/[0.08] bg-ink-900"
+        plan.highlight ? "border-neon-border bg-gradient-to-b from-neon-subtle to-white shadow-glow" : "border-gray-200 bg-ink-900"
       )}>
         {plan.highlight && (
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-neon px-3 py-1 text-xs font-semibold text-ink-950">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-neon px-3 py-1 text-xs font-semibold text-gray-900">
             <Sparkles className="mr-1 inline h-3 w-3" /> {translate(lang, "commerce.pricing.mostPopular")}
           </span>
         )}
-        <h3 className="text-lg font-semibold text-white">{tName}</h3>
-        <p className="mt-1 text-sm text-white/50">{tTagline}</p>
+        <h3 className="text-lg font-semibold text-gray-900">{tName}</h3>
+        <p className="mt-1 text-sm text-gray-500">{tTagline}</p>
         <div className="mt-4 flex items-end gap-1">
-          <span className="text-3xl font-bold text-white">{plan.price}</span>
-          <span className="mb-1 text-sm text-white/45">{tPeriod}</span>
+          <span className="text-3xl font-bold text-gray-900">{plan.price}</span>
+          <span className="mb-1 text-sm text-gray-500">{tPeriod}</span>
         </div>
         <ul className="mt-5 flex-1 space-y-2.5">
           {plan.features.map((f, fi) => (
-            <li key={f} className="flex items-start gap-2 text-sm text-white/65">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-neon" /> {pk ? translate(lang, `commerce.plan.${pk}.feat.${fi}`) : f}
+            <li key={f} className="flex items-start gap-2 text-sm text-gray-600">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-neon-ink" /> {pk ? translate(lang, `commerce.plan.${pk}.feat.${fi}`) : f}
             </li>
           ))}
         </ul>
@@ -112,12 +112,12 @@ function PlanCard({ plan, delay, lang }: { plan: Plan; delay: number; lang: Lang
           <CheckoutButton
             plan={CHECKOUT_PLAN[plan.name]}
             label={tCta}
-            className={plan.highlight ? "bg-neon text-ink-950 hover:brightness-110" : "glass text-white hover:border-neon/40"}
+            className={plan.highlight ? "bg-neon text-gray-900 hover:brightness-110" : "glass text-gray-900 hover:border-neon-border"}
           />
         ) : (
           <Link href={plan.href}
             className={cn("mt-6 flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all",
-              plan.highlight ? "bg-neon text-ink-950 hover:brightness-110" : "glass text-white hover:border-neon/40")}>
+              plan.highlight ? "bg-neon text-gray-900 hover:brightness-110" : "glass text-gray-900 hover:border-neon-border")}>
             {tCta}
           </Link>
         )}

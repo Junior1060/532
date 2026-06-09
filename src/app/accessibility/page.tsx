@@ -16,7 +16,7 @@ export default function AccessibilityPage() {
         description="532 aims to make host-city information easy to navigate across devices, languages, and assistive tools."
       />
       <Section className="pt-0">
-        <div className="mx-auto max-w-3xl space-y-6 text-sm leading-7 text-white/60">
+        <div className="mx-auto max-w-3xl space-y-6 text-sm leading-7 text-gray-600">
           <p>
             The site is designed with keyboard-accessible controls, semantic pages, responsive layouts, visible focus
             states, and language metadata for supported locales.

@@ -2,6 +2,7 @@ export type Country = "Canada" | "United States" | "Mexico";
 
 export type BusinessCategory =
   | "restaurants"
+  | "cafes"
   | "hotels"
   | "transportation"
   | "safe-rides"
@@ -9,6 +10,9 @@ export type BusinessCategory =
   | "translators"
   | "photographers"
   | "bars"
+  | "sports-bars"
+  | "grocery-stores"
+  | "attractions"
   | "fan-events"
   | "luggage-storage"
   | "currency-exchange"
@@ -101,6 +105,12 @@ export interface Business {
   featured: boolean;
   tags: string[];
   image: string; // gradient seed / emoji
+  // Location + Google Places fields (present on imported listings).
+  latitude?: number;
+  longitude?: number;
+  googleMapsUrl?: string;
+  googlePlaceId?: string;
+  photos?: string[]; // Google photo reference names, served via /api/places/photo
 }
 
 export interface FanHub {

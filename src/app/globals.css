@@ -9,7 +9,7 @@
 }
 
 * {
-  border-color: rgba(255, 255, 255, 0.06);
+  border-color: #e5e7eb;
 }
 
 html {
@@ -18,8 +18,8 @@ html {
 }
 
 body {
-  background-color: #050507;
-  color: #e7e7ea;
+  background-color: #ffffff;
+  color: #374151;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -28,8 +28,8 @@ body {
 
 /* Selection */
 ::selection {
-  background: rgba(0, 255, 133, 0.25);
-  color: #fff;
+  background: rgba(0, 193, 106, 0.18);
+  color: #064e3b;
 }
 
 /* Scrollbar */
@@ -38,54 +38,44 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0d;
+  background: #ffffff;
 }
 ::-webkit-scrollbar-thumb {
-  background: #26262f;
+  background: #e5e7eb;
   border-radius: 999px;
-  border: 2px solid #0a0a0d;
+  border: 2px solid #ffffff;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a45;
+  background: #d1d5db;
 }
 
 @layer components {
-  /* Glassmorphism surface */
+  /* White card surface (was glassmorphism) */
   .glass {
-    background: linear-gradient(
-      160deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.02) 100%
-    );
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
   }
 
   .glass-strong {
-    background: linear-gradient(
-      160deg,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.03) 100%
-    );
-    backdrop-filter: blur(28px) saturate(160%);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px -2px rgba(16, 24, 40, 0.08);
   }
 
   .glass-hover {
-    transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
   .glass-hover:hover {
-    border-color: rgba(0, 255, 133, 0.35);
-    box-shadow: 0 0 40px -16px rgba(0, 255, 133, 0.45);
-    transform: translateY(-3px);
+    border-color: #d1d5db;
+    box-shadow: 0 4px 12px -2px rgba(16, 24, 40, 0.08);
+    transform: translateY(-2px);
   }
 
-  /* Neon text */
+  /* Brand green text (deepened for contrast on white) */
   .text-neon {
-    color: #00ff85;
-    text-shadow: 0 0 24px rgba(0, 255, 133, 0.5);
+    color: #0a8f5b;
+    text-shadow: none;
   }
 
   /* Hairline divider */
@@ -94,7 +84,7 @@ body {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.12),
+      rgba(17, 24, 39, 0.1),
       transparent
     );
   }
@@ -114,34 +104,17 @@ body {
 }
 
 @layer utilities {
-  /* Animated grid background */
+  /* Grid/spotlight backgrounds neutralized for the clean white theme. */
   .bg-grid {
-    background-image: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0.035) 1px,
-        transparent 1px
-      ),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: none;
   }
 
   .bg-grid-neon {
-    background-image: linear-gradient(
-        to right,
-        rgba(0, 255, 133, 0.06) 1px,
-        transparent 1px
-      ),
-      linear-gradient(to bottom, rgba(0, 255, 133, 0.06) 1px, transparent 1px);
-    background-size: 44px 44px;
+    background-image: none;
   }
 
-  /* Radial spotlight */
   .spotlight {
-    background: radial-gradient(
-      60% 50% at 50% 0%,
-      rgba(0, 255, 133, 0.12) 0%,
-      transparent 70%
-    );
+    background: none;
   }
 
   .mask-fade-b {
@@ -171,10 +144,10 @@ body {
   }
 
   .gradient-text {
-    background: linear-gradient(120deg, #ffffff 0%, #b9ffd9 50%, #00ff85 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: #111827;
   }
 
   .no-scrollbar::-webkit-scrollbar {

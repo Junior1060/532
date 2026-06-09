@@ -6,6 +6,7 @@ import { Clock, BadgeCheck, Navigation, Footprints } from "lucide-react";
 import { NEAR_ME } from "@/data/categories";
 import { CITIES } from "@/data/cities";
 import { Icon } from "@/components/ui/Icon";
+import { Flag as FlagImg } from "@/components/ui/Flag";
 import { LiveDot } from "@/components/ui/Badge";
 import { cn, seededInt, seededValue } from "@/lib/utils";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
@@ -54,8 +55,8 @@ export function NearMeExplorer() {
         {CITIES.map((c, i) => (
           <button key={c.slug} onClick={() => setCityIdx(i)}
             className={cn("flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition-colors",
-              i === cityIdx ? "border-neon/40 bg-neon/10 text-neon" : "border-white/10 text-white/60 hover:text-white")}>
-            <span>{c.flag}</span> {c.shortName}
+              i === cityIdx ? "border-neon-border bg-neon-subtle text-neon-ink" : "border-gray-200 text-gray-600 hover:text-gray-900")}>
+            <span><FlagImg emoji={c.flag} /></span> {c.shortName}
           </button>
         ))}
       </div>
@@ -65,7 +66,7 @@ export function NearMeExplorer() {
         {NEAR_ME.map((c) => (
           <button key={c.slug} onClick={() => setCat(c.slug)}
             className={cn("flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition-colors",
-              cat === c.slug ? "border-white/30 bg-white/10 text-white" : "border-white/10 text-white/55 hover:text-white")}
+              cat === c.slug ? "border-gray-200 bg-gray-100 text-gray-900" : "border-gray-200 text-gray-600 hover:text-gray-900")}
             style={cat === c.slug ? { borderColor: c.color + "66", color: c.color } : undefined}>
             <Icon name={c.icon} className="h-4 w-4" /> {c.label}
           </button>
@@ -74,14 +75,14 @@ export function NearMeExplorer() {
 
       <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
         {/* Map */}
-        <div className="relative h-[420px] overflow-hidden rounded-4xl border border-white/10 bg-ink-950">
+        <div className="relative h-[420px] overflow-hidden rounded-4xl border border-gray-200 bg-gray-50">
           <div className="absolute inset-0 bg-grid opacity-30" />
-          <div className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-full bg-ink-950/70 px-3 py-1.5 text-xs text-white/70 backdrop-blur">
+          <div className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs text-gray-700 backdrop-blur">
             <LiveDot label={t("discovery.nearMe.liveLabel")} /> {t("discovery.nearMe.nearStadium").replace("{label}", active.label).replace("{stadium}", city.stadium.name)}
           </div>
           {/* center marker */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <span className="relative flex h-8 w-8 items-center justify-center rounded-full text-ink-950" style={{ background: active.color }}>
+            <span className="relative flex h-8 w-8 items-center justify-center rounded-full text-gray-900" style={{ background: active.color }}>
               <Icon name={active.icon} className="h-4 w-4" />
             </span>
           </div>
@@ -98,7 +99,7 @@ export function NearMeExplorer() {
                 style={{ left: `${x}%`, top: `${y}%` }}>
                 <span className="relative flex h-5 w-5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-40" style={{ background: active.color }} />
-                  <span className="relative inline-flex h-5 w-5 rounded-full border-2 border-ink-950" style={{ background: active.color }} />
+                  <span className="relative inline-flex h-5 w-5 rounded-full border-2 border-gray-200" style={{ background: active.color }} />
                 </span>
               </motion.div>
             );
@@ -115,25 +116,25 @@ export function NearMeExplorer() {
                 <Icon name={active.icon} className="h-5 w-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 font-medium text-white">
+                <div className="flex items-center gap-1.5 font-medium text-gray-900">
                   {p.name}
-                  {p.verified && <BadgeCheck className="h-3.5 w-3.5 text-neon" />}
+                  {p.verified && <BadgeCheck className="h-3.5 w-3.5 text-neon-ink" />}
                 </div>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-white/50">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-500">
                   <span className="flex items-center gap-1"><Footprints className="h-3 w-3" /> {t("discovery.nearMe.minutes").replace("{n}", String(p.walk))}</span>
                   <span className="flex items-center gap-1"><Navigation className="h-3 w-3" /> {t("discovery.nearMe.km").replace("{n}", String(p.dist))}</span>
-                  <span className={cn(p.open ? "text-neon" : "text-accent-red")}>
+                  <span className={cn(p.open ? "text-neon-ink" : "text-accent-red")}>
                     {p.open ? t("discovery.nearMe.openNow") : t("discovery.nearMe.closed")}
                   </span>
-                  <span className="text-white/40">· {t(`discovery.nearMe.busy.${p.busy}`)}</span>
+                  <span className="text-gray-400">· {t(`discovery.nearMe.busy.${p.busy}`)}</span>
                 </div>
               </div>
-              <button className="rounded-full bg-white/[0.06] p-2 text-white/70 transition-colors hover:bg-neon hover:text-ink-950" aria-label={t("discovery.nearMe.directions")}>
+              <button className="rounded-full bg-gray-50 p-2 text-gray-700 transition-colors hover:bg-neon hover:text-gray-900" aria-label={t("discovery.nearMe.directions")}>
                 <Navigation className="h-4 w-4" />
               </button>
             </motion.div>
           ))}
-          <p className="pt-1 text-center text-xs text-white/35">
+          <p className="pt-1 text-center text-xs text-gray-400">
             <Clock className="mr-1 inline h-3 w-3" /> {t("discovery.nearMe.resultsUpdate")}
           </p>
         </div>

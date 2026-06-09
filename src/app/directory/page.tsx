@@ -45,9 +45,9 @@ export default async function DirectoryPage({
             <Link
               key={c.slug}
               href={`/directory/${c.slug}`}
-              className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3.5 py-2 text-sm text-white/70 transition-colors hover:border-neon/30 hover:text-white"
+              className="flex shrink-0 items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3.5 py-2 text-sm text-gray-700 transition-colors hover:border-neon-border hover:text-gray-900"
             >
-              <Icon name={c.icon} className="h-4 w-4 text-neon" />
+              <Icon name={c.icon} className="h-4 w-4 text-neon-ink" />
               {c.label}
             </Link>
           ))}

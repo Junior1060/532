@@ -12,7 +12,7 @@ export function Section({
   id?: string;
 }) {
   return (
-    <section id={id} className={cn("relative py-16 md:py-24", className)}>
+    <section id={id} className={cn("relative py-20 md:py-28", className)}>
       <div className="container-pad">{children}</div>
     </section>
   );
@@ -42,18 +42,18 @@ export function SectionHeading({
       {eyebrow && (
         <div
           className={cn(
-            "mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-neon/80",
+            "mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-neon-ink",
             align === "center" && "flex justify-center"
           )}
         >
           {eyebrow}
         </div>
       )}
-      <h2 className="text-balance text-3xl font-semibold tracking-tight text-white md:text-4xl">
+      <h2 className="text-balance text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl">
         {title}
       </h2>
       {description && (
-        <p className="mt-4 text-base leading-relaxed text-white/55 md:text-lg">
+        <p className="mt-4 text-base leading-relaxed text-gray-600 md:text-lg">
           {description}
         </p>
       )}

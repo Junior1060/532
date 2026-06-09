@@ -42,18 +42,18 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative mt-10 border-t border-white/[0.06] pb-28 pt-16 lg:pb-16">
+    <footer className="relative mt-10 border-t border-gray-200 pb-28 pt-16 lg:pb-16">
       <div className="container-pad">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="max-w-xs">
             <Logo />
-            <p className="mt-4 text-sm leading-relaxed text-white/50">{t("footer.tagline")}</p>
+            <p className="mt-4 text-sm leading-relaxed text-gray-500">{t("footer.tagline")}</p>
             <div className="mt-5 flex gap-2">
               {[Twitter, Instagram, Github].map((I, i) => (
                 <a
                   key={i}
                   href="#"
-                  className="flex h-9 w-9 items-center justify-center rounded-full glass text-white/60 transition-colors hover:text-neon"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:border-gray-300 hover:text-neon-ink"
                   aria-label="social link"
                 >
                   <I className="h-4 w-4" />
@@ -64,13 +64,13 @@ export function Footer() {
 
           {cols.map((col) => (
             <div key={col.title}>
-              <h4 className="text-sm font-semibold text-white">{col.title}</h4>
+              <h4 className="text-sm font-semibold text-gray-900">{col.title}</h4>
               <ul className="mt-4 space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.href + l.label}>
                     <Link
                       href={l.href}
-                      className="text-sm text-white/50 transition-colors hover:text-white"
+                      className="text-sm text-gray-500 transition-colors hover:text-gray-900"
                     >
                       {l.label}
                     </Link>
@@ -81,12 +81,12 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 text-sm text-white/40 md:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-6 text-sm text-gray-400 md:flex-row">
           <p>{t("footer.copyright")}</p>
           <div className="flex gap-5">
-            <Link href="/privacy" className="hover:text-white/70">{t("footer.privacy")}</Link>
-            <Link href="/terms" className="hover:text-white/70">{t("footer.terms")}</Link>
-            <Link href="/accessibility" className="hover:text-white/70">{t("footer.accessibility")}</Link>
+            <Link href="/privacy" className="hover:text-gray-700">{t("footer.privacy")}</Link>
+            <Link href="/terms" className="hover:text-gray-700">{t("footer.terms")}</Link>
+            <Link href="/accessibility" className="hover:text-gray-700">{t("footer.accessibility")}</Link>
           </div>
         </div>
       </div>

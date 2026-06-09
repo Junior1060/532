@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
-  Star, MapPin, Phone, Mail, Globe, Clock, MessageCircle, ArrowRight, BadgeCheck, Navigation,
+  Star, MapPin, Phone, Mail, Globe, Clock, MessageCircle, ArrowRight, BadgeCheck, Navigation, Pencil,
 } from "lucide-react";
 import { getBusinessBySlug, getBusinessesByCity } from "@/lib/data/businesses";
 import { getCity } from "@/data/cities";
@@ -50,15 +50,24 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
   const rawCat = getCategory(b.category);
   const categoryLabel = rawCat ? (await translateCategory(rawCat, lang)).label : CATEGORY_LABEL[b.category];
 
+  // Google Maps links — prefer stored coords/URL, fall back to a name+address query.
+  const coords = b.latitude != null && b.longitude != null ? `${b.latitude},${b.longitude}` : null;
+  const mapsQuery = encodeURIComponent(`${b.name} ${b.address}`.trim());
+  const mapsViewUrl = b.googleMapsUrl
+    || (coords ? `https://www.google.com/maps/search/?api=1&query=${coords}` : `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`);
+  const mapsDirUrl = coords
+    ? `https://www.google.com/maps/dir/?api=1&destination=${coords}${b.googlePlaceId ? `&destination_place_id=${b.googlePlaceId}` : ""}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
+
   return (
     <>
       {/* Header */}
-      <section className="relative overflow-hidden border-b border-white/[0.06]">
-        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${b.image}22, #050507 70%)` }} />
+      <section className="relative overflow-hidden border-b border-gray-200">
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${b.image}22, #ffffff 70%)` }} />
         <div className="absolute inset-0 bg-grid opacity-30" />
         <div className="container-pad relative z-10 py-12 md:py-16">
           <Reveal>
-            <Link href={`/directory/${b.category}`} className="text-sm text-white/50 hover:text-neon">
+            <Link href={`/directory/${b.category}`} className="text-sm text-gray-500 hover:text-neon-ink">
               ← {categoryLabel}
             </Link>
             <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
@@ -68,15 +77,15 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
                   {b.featured && <Badge tone="amber">{translate(lang, "directory.business.featured")}</Badge>}
                   <Badge tone="neutral">{categoryLabel}</Badge>
                 </div>
-                <h1 className="font-display text-3xl font-bold text-white md:text-4xl">{b.name}</h1>
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-white/60">
+                <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">{b.name}</h1>
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-gray-600">
                   <span className="flex items-center gap-1.5 text-amber-300">
                     <Star className="h-4 w-4 fill-amber-300" /> {b.rating}
-                    <span className="text-white/40">{translate(lang, "directory.business.reviews").replace("{count}", String(formatNumber(b.reviewCount)))}</span>
+                    <span className="text-gray-400">{translate(lang, "directory.business.reviews").replace("{count}", String(formatNumber(b.reviewCount)))}</span>
                   </span>
                   <span>{price}</span>
                   {city && (
-                    <Link href={`/cities/${city.slug}`} className="flex items-center gap-1.5 hover:text-neon">
+                    <Link href={`/cities/${city.slug}`} className="flex items-center gap-1.5 hover:text-neon-ink">
                       <MapPin className="h-4 w-4" /> {city.name}
                     </Link>
                   )}
@@ -95,49 +104,58 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
           {/* Main */}
           <div className="space-y-6">
             <Reveal className="glass rounded-3xl p-6">
-              <h2 className="text-lg font-semibold text-white">{translate(lang, "directory.business.about")}</h2>
-              <p className="mt-3 leading-relaxed text-white/65">{b.description}</p>
+              <h2 className="text-lg font-semibold text-gray-900">{translate(lang, "directory.business.about")}</h2>
+              <p className="mt-3 leading-relaxed text-gray-600">{b.description}</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {b.tags.map((t) => (
-                  <span key={t} className="rounded-full bg-white/[0.05] px-3 py-1 text-sm text-white/65">{t}</span>
+                  <span key={t} className="rounded-full bg-gray-50 px-3 py-1 text-sm text-gray-600">{t}</span>
                 ))}
               </div>
             </Reveal>
 
-            {/* Gallery placeholder (gradient tiles) */}
+            {/* Gallery — real Google photos when available, else clean placeholders */}
             <Reveal delay={0.05} className="glass rounded-3xl p-6">
-              <h2 className="text-lg font-semibold text-white">{translate(lang, "directory.business.photos")}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{translate(lang, "directory.business.photos")}</h2>
               <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="aspect-[4/3] overflow-hidden rounded-2xl border border-white/[0.06]"
-                    style={{ background: `linear-gradient(${120 + i * 30}deg, ${b.image}33, #0a0a0d)` }}>
-                    <div className="h-full w-full bg-grid opacity-20" />
-                  </div>
-                ))}
+                {b.photos && b.photos.length > 0
+                  ? b.photos.slice(0, 6).map((name, i) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={i}
+                        src={`/api/places/photo?name=${encodeURIComponent(name)}&w=600`}
+                        alt={`${b.name} photo ${i + 1}`}
+                        loading="lazy"
+                        className="aspect-[4/3] w-full rounded-2xl border border-gray-200 object-cover"
+                      />
+                    ))
+                  : Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="aspect-[4/3] overflow-hidden rounded-2xl border border-gray-200"
+                        style={{ background: `linear-gradient(${120 + i * 30}deg, ${b.image}33, #ffffff)` }} />
+                    ))}
               </div>
             </Reveal>
 
             {/* Reviews summary */}
             <Reveal delay={0.1} className="glass rounded-3xl p-6">
-              <h2 className="text-lg font-semibold text-white">{translate(lang, "directory.business.ratings")}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{translate(lang, "directory.business.ratings")}</h2>
               <div className="mt-4 flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-white">{b.rating}</div>
+                  <div className="text-4xl font-bold text-gray-900">{b.rating}</div>
                   <div className="mt-1 flex justify-center gap-0.5">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={cn("h-3.5 w-3.5", i < Math.round(b.rating) ? "fill-amber-300 text-amber-300" : "text-white/20")} />
+                      <Star key={i} className={cn("h-3.5 w-3.5", i < Math.round(b.rating) ? "fill-amber-300 text-amber-300" : "text-gray-300")} />
                     ))}
                   </div>
-                  <div className="mt-1 text-xs text-white/45">{translate(lang, "directory.business.reviewsShort").replace("{count}", String(formatNumber(b.reviewCount)))}</div>
+                  <div className="mt-1 text-xs text-gray-500">{translate(lang, "directory.business.reviewsShort").replace("{count}", String(formatNumber(b.reviewCount)))}</div>
                 </div>
                 <div className="flex-1 space-y-1.5">
                   {[5, 4, 3, 2, 1].map((star) => {
                     const pct = star === Math.round(b.rating) ? 64 : star === 5 ? 70 : Math.max(4, 30 - star * 5);
                     return (
-                      <div key={star} className="flex items-center gap-2 text-xs text-white/45">
+                      <div key={star} className="flex items-center gap-2 text-xs text-gray-500">
                         <span className="w-3">{star}</span>
-                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
-                          <div className="h-full rounded-full bg-neon/60" style={{ width: `${pct}%` }} />
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-50">
+                          <div className="h-full rounded-full bg-neon-subtle" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     );
@@ -153,12 +171,12 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
               <div className="grid gap-3">
                 {b.whatsapp && (
                   <a href={`https://wa.me/${b.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-ink-950 transition-all hover:brightness-110">
+                    className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-gray-900 transition-all hover:brightness-110">
                     <MessageCircle className="h-4 w-4" /> {translate(lang, "directory.business.whatsapp")}
                   </a>
                 )}
                 <a href={`tel:${b.phone.replace(/\s/g, "")}`}
-                  className="flex items-center justify-center gap-2 rounded-full bg-neon px-5 py-3 font-semibold text-ink-950 transition-all hover:brightness-110">
+                  className="flex items-center justify-center gap-2 rounded-full bg-neon px-5 py-3 font-semibold text-gray-900 transition-all hover:brightness-110">
                   {translate(lang, "directory.business.bookNow")}
                 </a>
               </div>
@@ -170,15 +188,34 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
                 <InfoRow icon={Mail} value={b.email} href={`mailto:${b.email}`} />
                 {b.website && <InfoRow icon={Globe} value={translate(lang, "directory.business.visitWebsite")} href={b.website} />}
               </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-2 border-t border-gray-200 pt-5">
+                <a href={mapsViewUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900">
+                  <MapPin className="h-4 w-4" /> {translate(lang, "directory.business.viewOnMaps")}
+                </a>
+                <a href={mapsDirUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900">
+                  <Navigation className="h-4 w-4" /> {translate(lang, "directory.business.getDirections")}
+                </a>
+                <Link href={`/list-business?claim=${b.slug}`}
+                  className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900">
+                  <BadgeCheck className="h-4 w-4" /> {translate(lang, "directory.business.claimListing")}
+                </Link>
+                <Link href={`/list-business?suggest=${b.slug}`}
+                  className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900">
+                  <Pencil className="h-4 w-4" /> {translate(lang, "directory.business.suggestEdit")}
+                </Link>
+              </div>
             </div>
 
             {b.verification === "verified" && (
               <div className="glass rounded-3xl p-5">
-                <div className="flex items-center gap-2 text-neon">
+                <div className="flex items-center gap-2 text-neon-ink">
                   <BadgeCheck className="h-5 w-5" />
-                  <span className="font-semibold text-white">{translate(lang, "directory.business.verifiedTitle")}</span>
+                  <span className="font-semibold text-gray-900">{translate(lang, "directory.business.verifiedTitle")}</span>
                 </div>
-                <p className="mt-2 text-sm text-white/55">
+                <p className="mt-2 text-sm text-gray-600">
                   {translate(lang, "directory.business.verifiedNote")}
                 </p>
               </div>
@@ -190,7 +227,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
       {related.length > 0 && (
         <Section className="py-8">
           <div className="flex items-end justify-between">
-            <h2 className="text-2xl font-semibold text-white">{translate(lang, "directory.business.moreIn").replace("{category}", categoryLabel.toLowerCase()).replace("{city}", city?.shortName ?? "")}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">{translate(lang, "directory.business.moreIn").replace("{category}", categoryLabel.toLowerCase()).replace("{city}", city?.shortName ?? "")}</h2>
             <ButtonLink href={`/directory/${b.category}`} variant="outline" size="sm">{translate(lang, "directory.business.seeAll")} <ArrowRight className="h-4 w-4" /></ButtonLink>
           </div>
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -221,11 +258,11 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
 
 function InfoRow({ icon: Icon, value, href }: { icon: React.ComponentType<{ className?: string }>; value: string; href?: string }) {
   const content = (
-    <span className="flex items-start gap-2.5 text-white/65">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-neon" />
+    <span className="flex items-start gap-2.5 text-gray-600">
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-neon-ink" />
       <span className="break-words">{value}</span>
     </span>
   );
-  if (href) return <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="block transition-colors hover:text-white">{content}</a>;
+  if (href) return <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="block transition-colors hover:text-gray-900">{content}</a>;
   return content;
 }

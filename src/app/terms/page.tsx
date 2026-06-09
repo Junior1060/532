@@ -16,7 +16,7 @@ export default function TermsPage() {
         description="By using 532, you agree to use the platform responsibly and verify time-sensitive travel details."
       />
       <Section className="pt-0">
-        <div className="mx-auto max-w-3xl space-y-6 text-sm leading-7 text-white/60">
+        <div className="mx-auto max-w-3xl space-y-6 text-sm leading-7 text-gray-600">
           <p>
             532 provides city intelligence, business listings, and fan guidance for convenience. Match schedules,
             transit conditions, venue policies, prices, and availability can change, so users should confirm critical

@@ -35,7 +35,7 @@ export function Navbar() {
       <div
         className={cn(
           "transition-all duration-500",
-          scrolled ? "border-b border-white/[0.06] bg-ink-950/70 backdrop-blur-xl" : "bg-transparent"
+          scrolled ? "border-b border-gray-200 bg-white/80 backdrop-blur-xl" : "border-b border-transparent bg-white/0"
         )}
       >
         <nav className="container-pad flex h-16 items-center justify-between">
@@ -50,13 +50,13 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "relative rounded-full px-3.5 py-2 text-sm transition-colors",
-                    active ? "text-white" : "text-white/60 hover:text-white"
+                    active ? "text-gray-900" : "text-gray-500 hover:text-gray-900"
                   )}
                 >
                   {active && (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-white/[0.07]"
+                      className="absolute inset-0 -z-10 rounded-full bg-gray-100"
                       transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     />
                   )}
@@ -70,7 +70,7 @@ export function Navbar() {
             <LanguageDropdown />
             <Link
               href="/search"
-              className="hidden h-9 w-9 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white sm:flex"
+              className="hidden h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 sm:flex"
               aria-label="Search"
             >
               <Search className="h-4.5 w-4.5" />
@@ -81,7 +81,7 @@ export function Navbar() {
             </ButtonLink>
             <button
               onClick={() => setOpen((v) => !v)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white hover:bg-white/[0.06] lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-gray-900 hover:bg-gray-100 lg:hidden"
               aria-label="Toggle menu"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -97,14 +97,14 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
-            className="border-b border-white/[0.06] bg-ink-950/95 backdrop-blur-xl lg:hidden"
+            className="border-b border-gray-200 bg-white/95 backdrop-blur-xl lg:hidden"
           >
             <div className="container-pad grid gap-1 py-4">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="rounded-xl px-3 py-2.5 text-sm text-white/80 hover:bg-white/[0.06] hover:text-white"
+                  className="rounded-xl px-3 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                 >
                   {t(link.key)}
                 </Link>

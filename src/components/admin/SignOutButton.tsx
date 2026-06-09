@@ -17,7 +17,7 @@ export function SignOutButton({ label }: { label: string }) {
   return (
     <button
       onClick={signOut}
-      className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/80 transition-colors hover:border-white/25 hover:text-white"
+      className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900"
     >
       <LogOut className="h-4 w-4" /> {label}
     </button>

@@ -35,18 +35,18 @@ export default async function ListBusinessPage() {
           <div className="space-y-4">
             {perks.map((p, i) => (
               <Reveal key={p.key} delay={i * 0.06} className="glass flex items-start gap-3.5 rounded-2xl p-5">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-neon/12 text-neon">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-neon-subtle text-neon-ink">
                   <p.icon className="h-5 w-5" />
                 </span>
                 <div>
-                  <h3 className="font-semibold text-white">{translate(lang, `commerce.list.perk.${p.key}.title`)}</h3>
-                  <p className="mt-1 text-sm text-white/55">{translate(lang, `commerce.list.perk.${p.key}.text`)}</p>
+                  <h3 className="font-semibold text-gray-900">{translate(lang, `commerce.list.perk.${p.key}.title`)}</h3>
+                  <p className="mt-1 text-sm text-gray-600">{translate(lang, `commerce.list.perk.${p.key}.text`)}</p>
                 </div>
               </Reveal>
             ))}
-            <div className="glass rounded-2xl p-5 text-sm text-white/55">
+            <div className="glass rounded-2xl p-5 text-sm text-gray-600">
               {translate(lang, "commerce.list.upsell")}{" "}
-              <a href="/pricing" className="text-neon hover:underline">{translate(lang, "commerce.list.upsellLink")}</a>
+              <a href="/pricing" className="text-neon-ink hover:underline">{translate(lang, "commerce.list.upsellLink")}</a>
             </div>
           </div>
 

@@ -13,7 +13,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "glass rounded-3xl p-5",
+        "glass rounded-3xl p-6",
         hover && "glass-hover cursor-pointer",
         className
       )}
@@ -36,9 +36,9 @@ export function StatTile({
 }) {
   return (
     <div className={cn("glass rounded-2xl px-4 py-3.5", className)}>
-      <div className="text-xs uppercase tracking-wider text-white/45">{label}</div>
-      <div className="mt-1 text-xl font-semibold text-white">{value}</div>
-      {sub && <div className="mt-0.5 text-xs text-white/50">{sub}</div>}
+      <div className="text-xs uppercase tracking-wider text-gray-500">{label}</div>
+      <div className="mt-1 text-xl font-semibold text-gray-900">{value}</div>
+      {sub && <div className="mt-0.5 text-xs text-gray-500">{sub}</div>}
     </div>
   );
 }

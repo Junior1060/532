@@ -18,12 +18,12 @@ export function ListBusinessForm() {
   if (state.ok) {
     return (
       <div className="glass rounded-3xl p-8 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-neon/15 text-neon">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-neon-subtle text-neon-ink">
           <CheckCircle2 className="h-7 w-7" />
         </div>
-        <h2 className="mt-5 text-2xl font-semibold text-white">{t("commerce.form.success.title")}</h2>
-        <p className="mx-auto mt-3 max-w-md text-white/60">{state.message}</p>
-        <a href="/directory" className="mt-6 inline-flex rounded-full bg-neon px-6 py-3 font-semibold text-ink-950 hover:brightness-110">
+        <h2 className="mt-5 text-2xl font-semibold text-gray-900">{t("commerce.form.success.title")}</h2>
+        <p className="mx-auto mt-3 max-w-md text-gray-600">{state.message}</p>
+        <a href="/directory" className="mt-6 inline-flex rounded-full bg-neon px-6 py-3 font-semibold text-gray-900 hover:brightness-110">
           {t("commerce.form.success.browse")}
         </a>
       </div>
@@ -54,16 +54,16 @@ export function ListBusinessForm() {
       </div>
 
       <div className="mt-5">
-        <label className="mb-1.5 block text-sm font-medium text-white/80">
-          {t("commerce.form.description.label")} <span className="text-neon">*</span>
+        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          {t("commerce.form.description.label")} <span className="text-neon-ink">*</span>
         </label>
         <textarea
           name="description"
           rows={4}
           placeholder={t("commerce.form.description.placeholder")}
           className={cn(
-            "w-full rounded-2xl border bg-ink-950/60 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-neon/40",
-            state.errors?.description ? "border-accent-red/50" : "border-white/10"
+            "w-full rounded-2xl border bg-ink-950/60 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neon/40",
+            state.errors?.description ? "border-accent-red/50" : "border-gray-200"
           )}
         />
         {state.errors?.description && <p className="mt-1 text-xs text-accent-red">{state.errors.description}</p>}
@@ -76,7 +76,7 @@ export function ListBusinessForm() {
       </div>
 
       <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-white/40">
+        <p className="text-xs text-gray-400">
           {t("commerce.form.footnote")}
         </p>
         <SubmitButton />
@@ -92,7 +92,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="flex w-full items-center justify-center gap-2 rounded-full bg-neon px-7 py-3.5 font-semibold text-ink-950 transition-all hover:brightness-110 disabled:opacity-60 sm:w-auto"
+      className="flex w-full items-center justify-center gap-2 rounded-full bg-neon px-7 py-3.5 font-semibold text-gray-900 transition-all hover:brightness-110 disabled:opacity-60 sm:w-auto"
     >
       {pending ? (<><Loader2 className="h-4 w-4 animate-spin" /> {t("commerce.form.submitting")}</>) : t("commerce.form.submit")}
     </button>
@@ -104,8 +104,8 @@ function Field({
 }: { label: string; name: string; type?: string; placeholder?: string; error?: string; required?: boolean }) {
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-white/80">
-        {label} {required && <span className="text-neon">*</span>}
+      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-gray-700">
+        {label} {required && <span className="text-neon-ink">*</span>}
       </label>
       <input
         id={name}
@@ -113,8 +113,8 @@ function Field({
         type={type}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-2xl border bg-ink-950/60 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-neon/40",
-          error ? "border-accent-red/50" : "border-white/10"
+          "w-full rounded-2xl border bg-ink-950/60 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neon/40",
+          error ? "border-accent-red/50" : "border-gray-200"
         )}
       />
       {error && <p className="mt-1 text-xs text-accent-red">{error}</p>}
@@ -127,16 +127,16 @@ function SelectField({
 }: { label: string; name: string; options: { value: string; label: string }[]; error?: string; required?: boolean; placeholder: string }) {
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-white/80">
-        {label} {required && <span className="text-neon">*</span>}
+      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-gray-700">
+        {label} {required && <span className="text-neon-ink">*</span>}
       </label>
       <select
         id={name}
         name={name}
         defaultValue=""
         className={cn(
-          "w-full rounded-2xl border bg-ink-950/60 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-neon/40 [&>option]:bg-ink-900",
-          error ? "border-accent-red/50" : "border-white/10"
+          "w-full rounded-2xl border bg-ink-950/60 px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-neon/40 [&>option]:bg-ink-900",
+          error ? "border-accent-red/50" : "border-gray-200"
         )}
       >
         <option value="" disabled>{placeholder}</option>
@@ -149,10 +149,10 @@ function SelectField({
 
 function UploadBox({ label, hint }: { label: string; hint: string }) {
   return (
-    <div className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-4 py-6 text-center transition-colors hover:border-neon/30">
-      <Upload className="h-5 w-5 text-white/40" />
-      <span className="text-sm text-white/70">{label}</span>
-      <span className="text-xs text-white/35">{hint}</span>
+    <div className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center transition-colors hover:border-neon-border">
+      <Upload className="h-5 w-5 text-gray-400" />
+      <span className="text-sm text-gray-700">{label}</span>
+      <span className="text-xs text-gray-400">{hint}</span>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { CityCard } from "@/components/cards/CityCard";
+import { Flag as FlagImg } from "@/components/ui/Flag";
 import { CITIES, COUNTRIES, getCitiesByCountry } from "@/data/cities";
 import { buildMetadata } from "@/lib/seo";
 import { translate } from "@/lib/i18n";
@@ -31,10 +32,10 @@ export default async function CitiesPage() {
         return (
           <Section key={country.name} className="py-10">
             <div className="mb-6 flex items-center gap-3">
-              <span className="text-3xl">{country.flag}</span>
+              <span className="text-3xl"><FlagImg emoji={country.flag} /></span>
               <div>
-                <h2 className="text-2xl font-semibold text-white">{country.name}</h2>
-                <p className="text-sm text-white/45">
+                <h2 className="text-2xl font-semibold text-gray-900">{country.name}</h2>
+                <p className="text-sm text-gray-500">
                   {translate(lang, "cities.list.countryCount").replace("{count}", String(country.count))}
                 </p>
               </div>

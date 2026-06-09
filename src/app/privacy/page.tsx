@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         description="532 collects only the information needed to operate the directory, concierge, and match-day tools."
       />
       <Section className="pt-0">
-        <div className="mx-auto max-w-3xl space-y-6 text-sm leading-7 text-white/60">
+        <div className="mx-auto max-w-3xl space-y-6 text-sm leading-7 text-gray-600">
           <p>
             We use submitted business details, account information, search terms, and basic usage data to run the
             platform, improve recommendations, prevent abuse, and respond to support requests.

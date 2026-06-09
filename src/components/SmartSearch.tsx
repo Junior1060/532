@@ -31,33 +31,33 @@ export function SmartSearch({
       <form
         onSubmit={submit}
         className={cn(
-          "group flex items-center gap-3 rounded-full border border-white/12 bg-ink-900/70 backdrop-blur-xl transition-colors focus-within:border-neon/40 focus-within:shadow-glow-sm",
-          size === "lg" ? "px-5 py-3.5" : "px-4 py-2.5"
+          "group flex items-center gap-3 rounded-full border border-gray-200 bg-white shadow-sm transition-shadow focus-within:border-gray-300 focus-within:shadow-md",
+          size === "lg" ? "px-6 py-4" : "px-4 py-2.5"
         )}
       >
-        <Search className="h-5 w-5 shrink-0 text-white/40 group-focus-within:text-neon" />
+        <Search className={cn("shrink-0 text-gray-400 group-focus-within:text-neon-ink", size === "lg" ? "h-6 w-6" : "h-5 w-5")} />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder={placeholder ?? t("misc.search.placeholder")}
-          className="flex-1 bg-transparent text-white placeholder:text-white/35 focus:outline-none"
+          className={cn("flex-1 bg-transparent text-gray-900 placeholder:text-gray-400 focus:outline-none", size === "lg" && "text-lg")}
           aria-label={t("misc.search.ariaLabel")}
         />
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-neon px-4 py-1.5 text-sm font-semibold text-ink-950 transition-all hover:brightness-110 active:scale-95"
+          className="shrink-0 rounded-full bg-neon px-4 py-2 text-sm font-semibold text-gray-900 transition-all hover:brightness-105 active:scale-95"
         >
           {t("misc.search.button")}
         </button>
       </form>
       {size === "lg" && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-white/40">
-          <span className="text-white/30">{t("misc.search.tryLabel")}</span>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-gray-500">
+          <span className="text-gray-400">{t("misc.search.tryLabel")}</span>
           {HINTS.map((h) => (
             <button
               key={h}
               onClick={() => router.push(`/search?q=${encodeURIComponent(h)}`)}
-              className="rounded-full border border-white/10 px-2.5 py-1 transition-colors hover:border-neon/30 hover:text-white"
+              className="rounded-full border border-gray-200 px-3 py-1.5 transition-colors hover:border-gray-300 hover:text-gray-900"
             >
               {h}
             </button>

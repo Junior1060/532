@@ -15,10 +15,10 @@ export interface SubmitState {
 
 // Runtime allow-list mirroring the BusinessCategory union in lib/types.ts.
 const ALLOWED_CATEGORIES = new Set<BusinessCategory>([
-  "restaurants", "hotels", "transportation", "safe-rides", "tour-guides",
-  "translators", "photographers", "bars", "fan-events", "luggage-storage",
-  "currency-exchange", "sim-cards", "pharmacies", "medical-services",
-  "security-services", "airport-transfers",
+  "restaurants", "cafes", "hotels", "transportation", "safe-rides", "tour-guides",
+  "translators", "photographers", "bars", "sports-bars", "grocery-stores",
+  "attractions", "fan-events", "luggage-storage", "currency-exchange", "sim-cards",
+  "pharmacies", "medical-services", "security-services", "airport-transfers",
 ]);
 
 // Per-field maximum lengths — server-side cap so a client can't post megabytes.

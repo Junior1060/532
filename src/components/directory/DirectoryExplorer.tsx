@@ -53,13 +53,13 @@ export function DirectoryExplorer({
     <div>
       {/* Controls */}
       <div className="glass sticky top-16 z-30 rounded-3xl p-4">
-        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-ink-950/60 px-4 py-2.5 focus-within:border-neon/40">
-          <Search className="h-4.5 w-4.5 text-white/40" />
+        <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-ink-950/60 px-4 py-2.5 focus-within:border-neon-border">
+          <Search className="h-4.5 w-4.5 text-gray-400" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("directory.searchPlaceholder")}
-            className="flex-1 bg-transparent text-sm text-white placeholder:text-white/35 focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
           />
         </div>
 
@@ -76,7 +76,7 @@ export function DirectoryExplorer({
             onClick={() => setVerifiedOnly((v) => !v)}
             className={cn(
               "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
-              verifiedOnly ? "border-neon/40 bg-neon/10 text-neon" : "border-white/10 text-white/60 hover:text-white"
+              verifiedOnly ? "border-neon-border bg-neon-subtle text-neon-ink" : "border-gray-200 text-gray-600 hover:text-gray-900"
             )}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" /> {t("directory.verifiedOnly")}
@@ -84,7 +84,7 @@ export function DirectoryExplorer({
         </div>
       </div>
 
-      <div className="mt-5 text-sm text-white/45">
+      <div className="mt-5 text-sm text-gray-500">
         {t(results.length === 1 ? "directory.resultCount.one" : "directory.resultCount.other").replace(
           "{count}",
           String(results.length)
@@ -92,7 +92,7 @@ export function DirectoryExplorer({
       </div>
 
       {results.length === 0 ? (
-        <div className="mt-10 rounded-3xl border border-white/10 p-12 text-center text-white/50">
+        <div className="mt-10 rounded-3xl border border-gray-200 p-12 text-center text-gray-500">
           {t("directory.empty")}
         </div>
       ) : (
@@ -118,12 +118,12 @@ function Select({
   options: { value: string; label: string }[];
 }) {
   return (
-    <label className="flex items-center gap-2 rounded-full border border-white/10 bg-ink-950/60 px-3 py-1.5 text-sm">
-      <span className="text-white/40">{label}</span>
+    <label className="flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm">
+      <span className="text-gray-400">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent text-white focus:outline-none [&>option]:bg-ink-900"
+        className="bg-transparent text-gray-900 focus:outline-none [&>option]:bg-white"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

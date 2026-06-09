@@ -25,7 +25,7 @@ import {
 
 const TABLE = "businesses";
 const COLUMNS =
-  "id,slug,name,category,city_slug,description,address,website,phone,email,whatsapp,hours,verification,rating,review_count,price_level,distance_from_stadium_km,plan,featured,tags,logo_url";
+  "id,slug,name,category,city_slug,description,address,website,phone,email,whatsapp,hours,verification,rating,review_count,price_level,distance_from_stadium_km,plan,featured,tags,logo_url,latitude,longitude,google_maps_url,google_place_id,photos";
 
 let _client: SupabaseClient | null | undefined;
 function db(): SupabaseClient | null {
@@ -65,6 +65,11 @@ interface Row {
   featured: boolean | null;
   tags: string[] | null;
   logo_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  google_maps_url: string | null;
+  google_place_id: string | null;
+  photos: string[] | null;
 }
 
 function mapRow(row: Row): Business {
@@ -90,6 +95,11 @@ function mapRow(row: Row): Business {
     featured: !!row.featured,
     tags: row.tags ?? [],
     image: row.logo_url || accentFor(row.city_slug),
+    latitude: row.latitude ?? undefined,
+    longitude: row.longitude ?? undefined,
+    googleMapsUrl: row.google_maps_url ?? undefined,
+    googlePlaceId: row.google_place_id ?? undefined,
+    photos: row.photos ?? undefined,
   };
 }
 

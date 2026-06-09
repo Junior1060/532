@@ -41,11 +41,11 @@ export default async function MatchDayPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05} className="glass rounded-3xl p-6">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-neon/12 text-neon">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-neon-subtle text-neon-ink">
                 <f.icon className="h-5 w-5" />
               </span>
-              <h3 className="mt-4 font-semibold text-white">{f.title}</h3>
-              <p className="mt-1.5 text-sm text-white/55">{f.text}</p>
+              <h3 className="mt-4 font-semibold text-gray-900">{f.title}</h3>
+              <p className="mt-1.5 text-sm text-gray-600">{f.text}</p>
             </Reveal>
           ))}
         </div>

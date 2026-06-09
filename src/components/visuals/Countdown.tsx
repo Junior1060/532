@@ -53,14 +53,14 @@ export function Countdown({
         >
           <span
             className={cn(
-              "font-mono font-semibold tabular-nums text-neon",
+              "font-mono font-semibold tabular-nums text-neon-ink",
               compact ? "text-lg" : "text-2xl md:text-4xl"
             )}
             suppressHydrationWarning
           >
             {String(u.value).padStart(2, "0")}
           </span>
-          <span className="mt-0.5 text-[10px] uppercase tracking-widest text-white/45">
+          <span className="mt-0.5 text-[10px] uppercase tracking-widest text-gray-500">
             {u.label}
           </span>
           {i < units.length - 1 && null}

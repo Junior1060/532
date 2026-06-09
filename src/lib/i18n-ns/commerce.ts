@@ -166,6 +166,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
     // Admin dashboard
     "commerce.admin.tab.overview": "Overview",
     "commerce.admin.tab.submissions": "Submissions",
+    "commerce.admin.tab.imports": "Import",
     "commerce.admin.tab.cities": "Cities",
     "commerce.admin.tab.alerts": "Alerts",
     "commerce.admin.tab.community": "Moderation",
@@ -356,6 +357,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
 
     "commerce.admin.tab.overview": "نظرة عامة",
     "commerce.admin.tab.submissions": "الطلبات",
+    "commerce.admin.tab.imports": "استيراد",
     "commerce.admin.tab.cities": "المدن",
     "commerce.admin.tab.alerts": "التنبيهات",
     "commerce.admin.tab.community": "الإشراف",
@@ -546,6 +548,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
 
     "commerce.admin.tab.overview": "Aperçu",
     "commerce.admin.tab.submissions": "Soumissions",
+    "commerce.admin.tab.imports": "Importer",
     "commerce.admin.tab.cities": "Villes",
     "commerce.admin.tab.alerts": "Alertes",
     "commerce.admin.tab.community": "Modération",
@@ -736,6 +739,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
 
     "commerce.admin.tab.overview": "Resumen",
     "commerce.admin.tab.submissions": "Envíos",
+    "commerce.admin.tab.imports": "Importar",
     "commerce.admin.tab.cities": "Ciudades",
     "commerce.admin.tab.alerts": "Alertas",
     "commerce.admin.tab.community": "Moderación",
@@ -926,6 +930,7 @@ export const commerceDict: Record<LanguageCode, Dictionary> = {
 
     "commerce.admin.tab.overview": "Übersicht",
     "commerce.admin.tab.submissions": "Einreichungen",
+    "commerce.admin.tab.imports": "Importieren",
     "commerce.admin.tab.cities": "Städte",
     "commerce.admin.tab.alerts": "Warnungen",
     "commerce.admin.tab.community": "Moderation",

@@ -65,13 +65,13 @@ export function AuthNav({ variant = "desktop" }: { variant?: "desktop" | "mobile
   if (!email) {
     if (variant === "mobile") {
       return (
-        <Link href="/login" className="flex items-center justify-center gap-1.5 rounded-full glass px-4 py-2 text-sm font-medium text-white">
+        <Link href="/login" className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900">
           <LogIn className="h-4 w-4" /> {t("action.signIn")}
         </Link>
       );
     }
     return (
-      <Link href="/login" className="hidden h-9 items-center gap-1.5 rounded-full px-3 text-sm text-white/70 transition-colors hover:text-white md:flex">
+      <Link href="/login" className="hidden h-9 items-center gap-1.5 rounded-full px-3 text-sm text-gray-500 transition-colors hover:text-gray-900 md:flex">
         <LogIn className="h-4 w-4" /> {t("action.signIn")}
       </Link>
     );
@@ -84,11 +84,11 @@ export function AuthNav({ variant = "desktop" }: { variant?: "desktop" | "mobile
     return (
       <div className="col-span-2 grid gap-2">
         {isAdmin && (
-          <Link href="/admin" className="flex items-center justify-center gap-1.5 rounded-full glass px-4 py-2 text-sm font-medium text-white">
+          <Link href="/admin" className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900">
             <LayoutDashboard className="h-4 w-4" /> Admin
           </Link>
         )}
-        <button onClick={signOut} className="flex items-center justify-center gap-1.5 rounded-full glass px-4 py-2 text-sm font-medium text-white">
+        <button onClick={signOut} className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900">
           <LogOut className="h-4 w-4" /> {t("commerce.admin.signOut")}
         </button>
       </div>
@@ -100,21 +100,21 @@ export function AuthNav({ variant = "desktop" }: { variant?: "desktop" | "mobile
     <div ref={menuRef} className="relative hidden md:block">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] pl-1.5 pr-2.5 text-sm text-white/80 transition-colors hover:text-white"
+        className="flex h-9 items-center gap-1.5 rounded-full border border-gray-200 bg-white pl-1.5 pr-2.5 text-sm text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900"
       >
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neon text-xs font-bold text-ink-950">{initial}</span>
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neon text-xs font-bold text-gray-900">{initial}</span>
         <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-white/10 bg-ink-900/95 p-1.5 shadow-card backdrop-blur-xl">
-          <div className="truncate px-3 py-2 text-xs text-white/45">{email}</div>
+        <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white p-1.5 shadow-lg">
+          <div className="truncate px-3 py-2 text-xs text-gray-400">{email}</div>
           {isAdmin && (
-            <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/80 hover:bg-white/[0.06] hover:text-white">
-              <LayoutDashboard className="h-4 w-4 text-neon" /> Admin dashboard
+            <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+              <LayoutDashboard className="h-4 w-4 text-neon-ink" /> Admin dashboard
             </Link>
           )}
-          <button onClick={signOut} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/80 hover:bg-white/[0.06] hover:text-white">
+          <button onClick={signOut} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
             <LogOut className="h-4 w-4" /> {t("commerce.admin.signOut")}
           </button>
         </div>

@@ -57,7 +57,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         <div className="no-scrollbar flex gap-2 overflow-x-auto">
           {otherCategories.map((c) => (
             <Link key={c.slug} href={`/directory/${c.slug}`}
-              className="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-sm text-white/60 hover:border-neon/30 hover:text-white">
+              className="shrink-0 rounded-full border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:border-neon-border hover:text-gray-900">
               {c.label}
             </Link>
           ))}
