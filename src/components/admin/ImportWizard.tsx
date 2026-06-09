@@ -118,20 +118,20 @@ export function ImportWizard() {
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="City">
-            <select value={citySlug} onChange={(e) => pickCity(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30">
+            <select value={citySlug} onChange={(e) => pickCity(e.target.value)} className="w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30">
               {CITIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
             </select>
           </Field>
           <Field label="Anchor type">
-            <select value={anchorType} onChange={(e) => pickAnchor(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30">
+            <select value={anchorType} onChange={(e) => pickAnchor(e.target.value)} className="w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30">
               {ANCHOR_TYPES.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
             </select>
           </Field>
           <Field label="Latitude">
-            <input value={lat} onChange={(e) => setLat(e.target.value)} inputMode="decimal" className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30" />
+            <input value={lat} onChange={(e) => setLat(e.target.value)} inputMode="decimal" className="w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30" />
           </Field>
           <Field label="Longitude">
-            <input value={lng} onChange={(e) => setLng(e.target.value)} inputMode="decimal" className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30" />
+            <input value={lng} onChange={(e) => setLng(e.target.value)} inputMode="decimal" className="w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30" />
           </Field>
         </div>
 
@@ -153,7 +153,7 @@ export function ImportWizard() {
 
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <Field label="Radius" className="w-40">
-            <select value={radiusM} onChange={(e) => setRadiusM(Number(e.target.value))} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30">
+            <select value={radiusM} onChange={(e) => setRadiusM(Number(e.target.value))} className="w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-neon focus:outline-none focus:ring-2 focus:ring-neon/30">
               {RADII.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
             </select>
           </Field>
@@ -229,7 +229,7 @@ export function ImportWizard() {
 
 function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
-    <label className={cn("block", className)}>
+    <label className={cn("block min-w-0", className)}>
       <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-400">{label}</span>
       {children}
     </label>
