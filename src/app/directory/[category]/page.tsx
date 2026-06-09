@@ -3,8 +3,10 @@ import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { DirectoryExplorer } from "@/components/directory/DirectoryExplorer";
+import { AffiliateCTA } from "@/components/affiliate/AffiliateCTA";
 import { Icon } from "@/components/ui/Icon";
 import { CATEGORIES, getCategory } from "@/data/categories";
+import { getAffiliateForCategory } from "@/data/affiliates";
 import { getBusinessesByCategory } from "@/lib/data/businesses";
 import { buildMetadata } from "@/lib/seo";
 import { translate } from "@/lib/i18n";
@@ -34,6 +36,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const { category } = await params;
   const rawCat = getCategory(category);
   if (!rawCat) notFound();
+  const offer = getAffiliateForCategory(rawCat.slug);
   const lang = await getServerLang();
   const cat = await translateCategory(rawCat, lang);
   const businesses = await translateBusinesses(await getBusinessesByCategory(rawCat.slug), lang);
@@ -65,6 +68,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       </PageHeader>
 
       <Section className="py-10">
+        {offer && <AffiliateCTA offer={offer} />}
         <DirectoryExplorer businesses={businesses} lockCategory />
       </Section>
     </>

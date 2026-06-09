@@ -2,9 +2,11 @@ import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { DirectoryExplorer } from "@/components/directory/DirectoryExplorer";
+import { AffiliateStrip } from "@/components/affiliate/AffiliateCTA";
 import { Icon } from "@/components/ui/Icon";
 import { listBusinesses, getDirectoryStats } from "@/lib/data/businesses";
 import { CATEGORIES } from "@/data/categories";
+import { getFeaturedAffiliates } from "@/data/affiliates";
 import { buildMetadata } from "@/lib/seo";
 import { translate } from "@/lib/i18n";
 import { getServerLang } from "@/lib/locale";
@@ -52,6 +54,8 @@ export default async function DirectoryPage({
             </Link>
           ))}
         </div>
+
+        <AffiliateStrip offers={getFeaturedAffiliates()} />
 
         <DirectoryExplorer businesses={businesses} initialCity={city} initialCategory={category} />
       </Section>

@@ -20,6 +20,8 @@ import { MatchCard } from "@/components/cards/MatchCard";
 import { BusinessCard } from "@/components/cards/BusinessCard";
 import { Countdown } from "@/components/visuals/Countdown";
 import { Flag as FlagImg } from "@/components/ui/Flag";
+import { AffiliateStrip } from "@/components/affiliate/AffiliateCTA";
+import { getFeaturedAffiliates } from "@/data/affiliates";
 import { buildMetadata } from "@/lib/seo";
 import { cn, formatNumber, seededInt } from "@/lib/utils";
 
@@ -109,6 +111,11 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
           <Fact icon={Languages} label={translate(lang, "cities.detail.fact.language")} value={city.language} />
           <Fact icon={MapPin} label={translate(lang, "cities.detail.fact.stadiumArea")} value={city.stadium.neighborhood} />
         </div>
+      </Section>
+
+      {/* Plan-your-trip essentials (affiliate) */}
+      <Section className="py-2">
+        <AffiliateStrip offers={getFeaturedAffiliates()} />
       </Section>
 
       {/* Stadium + next match */}
