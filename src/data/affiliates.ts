@@ -42,7 +42,7 @@ export const AFFILIATE_OFFERS: AffiliateOffer[] = [
     description:
       "Skip airport SIM queues — install an eSIM before you fly and arrive online in any host city. Plans from a few dollars.",
     ctaLabel: "Get an eSIM",
-    href: "https://www.airalo.com/?aff=YOUR_AIRALO_ID",
+    href: "https://airalo.tpx.lv/AUFJLM5C",
   },
   {
     id: "booking-hotels",
@@ -56,15 +56,15 @@ export const AFFILIATE_OFFERS: AffiliateOffer[] = [
     href: "https://www.booking.com/index.html?aid=YOUR_BOOKING_AID",
   },
   {
-    id: "welcome-transfers",
+    id: "kiwitaxi-transfers",
     category: "airport-transfers",
-    partner: "Welcome Pickups",
+    partner: "Kiwitaxi",
     icon: "Plane",
     title: "Pre-book your airport ride",
     description:
-      "A vetted English-speaking driver waiting at arrivals, fixed price, no surge. Lock in your airport-to-hotel transfer before you travel.",
+      "An English-speaking driver waiting at arrivals, fixed price, no surge. Lock in your airport-to-hotel transfer before you travel.",
     ctaLabel: "Book a transfer",
-    href: "https://www.welcomepickups.com/?ref=YOUR_WELCOME_ID",
+    href: "https://kiwi.tpx.lv/rj0wtarT",
   },
   {
     id: "gyg-tours",
@@ -91,7 +91,7 @@ export const AFFILIATE_OFFERS: AffiliateOffer[] = [
 ];
 
 /** Categories shown as the "Fan essentials" strip on the directory home. */
-export const FEATURED_AFFILIATE_IDS = ["airalo-esim", "booking-hotels", "welcome-transfers"];
+export const FEATURED_AFFILIATE_IDS = ["airalo-esim", "booking-hotels", "kiwitaxi-transfers"];
 
 export function getAffiliateForCategory(category: string): AffiliateOffer | undefined {
   return AFFILIATE_OFFERS.find((o) => o.category === category);
