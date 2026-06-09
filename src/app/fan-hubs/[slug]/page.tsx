@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Calendar, MapPin, ArrowRight, ExternalLink, Building2 } from "lucide-react";
 import { FAN_HUBS, getFanHub } from "@/data/fanHubs";
 import { getCity } from "@/data/cities";
+import { CITY_IMAGES } from "@/data/cityImages";
 import { getBusinessesByCity } from "@/lib/data/businesses";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -40,6 +42,7 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
   const lang = await getServerLang();
   const hub = await translateFanHub(rawHub, lang);
   const city = getCity(rawHub.citySlug)!;
+  const photo = CITY_IMAGES[rawHub.citySlug];
   const bars = await translateBusinesses(
     (await getBusinessesByCity(city.slug)).filter((b) => b.category === "bars" || b.category === "restaurants").slice(0, 3),
     lang,
@@ -47,20 +50,43 @@ export default async function FanHubPage({ params }: { params: Promise<{ slug: s
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-gray-200 pb-12 pt-14 md:pt-20">
-        <AmbientBackground />
-        <div className="container-pad relative z-10">
-          <Reveal>
-            <Link href="/fan-hubs" className="text-sm text-gray-500 hover:text-neon-ink">{translate(lang, "social.fanHub.backToAll")}</Link>
-            <div className="mt-4 flex items-center gap-4">
-              <span className="text-6xl">{hub.emoji}</span>
-              <div>
-                <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">{hub.name}</h1>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <Badge tone="neutral"><MapPin className="h-3.5 w-3.5" /> {city.name}</Badge>
-                  {hub.schedule && <Badge tone="neon"><Calendar className="h-3.5 w-3.5" /> {hub.schedule}</Badge>}
-                </div>
+      <section className="relative overflow-hidden border-b border-gray-200">
+        {photo ? (
+          <div className="relative h-52 w-full overflow-hidden md:h-72">
+            <Image
+              src={photo}
+              alt={`${city.name} — ${hub.name}`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10" />
+            <div className="container-pad absolute inset-x-0 bottom-0 pb-5">
+              <Link href="/fan-hubs" className="text-sm text-white/80 hover:text-white">{translate(lang, "social.fanHub.backToAll")}</Link>
+              <div className="mt-2 flex items-center gap-3">
+                <span className="text-4xl drop-shadow-lg">{hub.emoji}</span>
+                <h1 className="font-display text-3xl font-bold text-white drop-shadow-lg md:text-4xl">{hub.name}</h1>
               </div>
+            </div>
+          </div>
+        ) : (
+          <div className="absolute inset-0"><AmbientBackground /></div>
+        )}
+        <div className="container-pad relative z-10 pb-12 pt-6 md:pt-8">
+          <Reveal>
+            {!photo && (
+              <>
+                <Link href="/fan-hubs" className="text-sm text-gray-500 hover:text-neon-ink">{translate(lang, "social.fanHub.backToAll")}</Link>
+                <div className="mt-4 flex items-center gap-4">
+                  <span className="text-6xl">{hub.emoji}</span>
+                  <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">{hub.name}</h1>
+                </div>
+              </>
+            )}
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone="neutral"><MapPin className="h-3.5 w-3.5" /> {city.name}</Badge>
+              {hub.schedule && <Badge tone="neon"><Calendar className="h-3.5 w-3.5" /> {hub.schedule}</Badge>}
             </div>
             <p className="mt-5 max-w-2xl text-gray-600">{hub.description}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
